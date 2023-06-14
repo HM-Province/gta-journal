@@ -4,10 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Журнал Активности</title>
+
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="../styles/alarm-spinner.css">
   </head>
   <body>
-    <section class="loading"></section>
-    <section class="credentials"></section>
-    <section class="actions"></section>
+    <div style="-webkit-app-region: drag;" class="flex w-12 pr-2 align-items-center justify-content-end">
+      <span style="margin-top: -16px;" class="font-bold cursor-pointer p-2 text-xl">_</span>
+      <span class="font-bold select-none cursor-pointer p-2 text-xl">х</span>
+    </div>
+    <main>
+      <section id="loading" style="height: 80vh;" class="w-12 flex flex-column align-items-center justify-content-center">
+        <div class="alarm-spinner"></div>
+      </section>
+      <section id="login" class="flex flex-column align-items-center justify-content-center hidden">
+        <span class="text-2xl font-bold mx-auto mb-4">Введите данные</span>
+        <input class="mb-2" type="text" name="login" id="login_input" placeholder="Логин">
+        <input class="mb-2" type="password" name="password" id="password_input" placeholder="Пароль">
+        <button>Войти</button>
+      </section>
+      <section id="actions" class="hidden"></section>
+    </main>
+
+    <script src="script.js"></script>
   </body>
 </html>

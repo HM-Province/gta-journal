@@ -1,0 +1,48 @@
+@import "../fonts/stylesheet.css";
+@import "../styles/primeflex.css";
+
+:root {
+  --surface: #1b1b1b;
+  --card: #333;
+
+  --primary-color: #474bff;
+
+  --font-color: #fff;
+  --font: 'Google Sans';
+}
+
+* {
+  font-family: var(--font);
+  color: var(--font-color);
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+html, body {
+  background-color: var(--surface);
+}
+
+input {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  color: var(--font-color);
+  background-color: var(--card);
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  color: var(--font-color);
+  background-color: var(--primary-color);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 18px;
+}

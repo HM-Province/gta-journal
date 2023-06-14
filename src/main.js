@@ -1,12 +1,20 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 
+// Auto Updater
+require('update-electron-app')({
+  repo: 'HM-Province/gta-journal',
+  updateInterval: '1 hour',
+})
+
 if (require('electron-squirrel-startup')) app.quit();
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 600,
-    height: 600,
+    width: 650,
+    height: 400,
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
