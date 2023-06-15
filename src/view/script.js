@@ -56,7 +56,6 @@ document
   ?.addEventListener("click", () => checkLogin(true));
 
 document.getElementById("window_hide")?.addEventListener("click", () => {
-  console.log(0);
   window.electronAPI.hideWindow();
 });
 document
@@ -205,8 +204,6 @@ async function loadStatus() {
     }
   );
 
-  console.log(response, response.data);
-
   const parser = new DOMParser();
   const parsedDocument = parser.parseFromString(response.data, "text/html");
 
@@ -243,7 +240,6 @@ async function loadStatus() {
       else state.users.offline.push(user);
     }
   }
-  console.log(state.users);
 
   state.isLoading = false;
   state.showActions = true;
