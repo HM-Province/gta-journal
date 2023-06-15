@@ -13,6 +13,6 @@
 Так как программа не подписана каким-либо сертификатом, некоторые антивирусы могут начать ругаться.  
 **В чём же проблема подписать программу?**  
 Проблема в том, что надо за такие деяния платить ♂️300 bucks♂️ дяде Сэму раз в год.  
-Вирусов нет, код открытый. Для удостоверения страница на [VirusTotal (Setup Alpha 5)] (https://www.virustotal.com/gui/file/5ec5d900a919240ec2d184eb7ab7fe17c7566bc4dbb91dd43844d3094f47b018/detection)
+Вирусов нет, код открытый. Для удостоверения страница на [VirusTotal (Setup Alpha 5)](https://www.virustotal.com/gui/file/5ec5d900a919240ec2d184eb7ab7fe17c7566bc4dbb91dd43844d3094f47b018/detection)
 
 По всем вопросам: [hm-support@gachi.su](mailto:hm-support@gachi.su)
