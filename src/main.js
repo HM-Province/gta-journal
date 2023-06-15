@@ -21,7 +21,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile(path.join(__dirname, "./view/index.html"));
+  win.loadFile(path.join(__dirname, "./views/main/index.html"));
 
   return win;
 }

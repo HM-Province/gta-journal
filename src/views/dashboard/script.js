@@ -1,13 +1,8 @@
-import parseCookies from "../scripts/set-cookie.js";
+import { createUserMiniCard } from "../../scripts/utils/user.js";
 
 let state = {
   isLoading: true,
-  showLogin: false,
   showActions: false,
-  login: {
-    login: "",
-    password: "",
-  },
   status: 0,
   currentUser: {
     tag: "N/A",
@@ -41,33 +36,12 @@ const activityStatuses = [
   },
 ];
 
-const loginField = document.getElementById("login_input");
-const passwordField = document.getElementById("password_input");
-
-loginField.addEventListener("input", (ev) => {
-  state.login.login = ev.target.value;
-});
-
-passwordField.addEventListener("input", (ev) => {
-  state.login.password = ev.target.value;
-});
-
 document
   .getElementById("logout_button")
   ?.addEventListener("click", () => logout());
 document
   .getElementById("refresh_button")
   ?.addEventListener("click", () => loadStatus());
-document
-  .getElementById("login_button")
-  ?.addEventListener("click", () => checkLogin(true));
-
-document.getElementById("window_hide")?.addEventListener("click", () => {
-  window.electronAPI.hideWindow();
-});
-document
-  .getElementById("window_close")
-  ?.addEventListener("click", () => window.electronAPI.closeWindow());
 
 document
   .getElementById("online_button")
@@ -84,12 +58,6 @@ function render() {
     document.getElementById("loading")?.classList.remove("hidden");
   } else {
     document.getElementById("loading")?.classList.add("hidden");
-  }
-
-  if (state.showLogin) {
-    document.getElementById("login")?.classList.remove("hidden");
-  } else {
-    document.getElementById("login")?.classList.add("hidden");
   }
 
   if (state.showActions) {
@@ -116,7 +84,7 @@ function renderActivity() {
 
   for (const i in state.users.online) {
     const user = state.users.online[i];
-    const element = createUserElement(user);
+    const element = createUserMiniCard(user);
 
     onlineUsers.appendChild(element);
   }
@@ -129,7 +97,7 @@ function renderActivity() {
 
   for (const i in state.users.afk) {
     const user = state.users.afk[i];
-    const element = createUserElement(user);
+    const element = createUserMiniCard(user);
 
     afkUsers.appendChild(element);
   }
@@ -142,65 +110,19 @@ function renderActivity() {
 
   for (const i in state.users.offline) {
     const user = state.users.offline[i];
-    const element = createUserElement(user);
+    const element = createUserMiniCard(user);
 
     offlineUsers.appendChild(element);
   }
 }
 
-function createUserElement(user) {
-  const element = document.createElement("div");
-
-  element.classList.add(
-    "px-3",
-    "py-2",
-    "flex",
-    "align-items-center",
-    "surface-card",
-    "px-3",
-    "py-2",
-    "border-round-xl",
-    "shadow-3"
-  );
-
-  const image = document.createElement("img");
-  image.src = "https://gta-journal.ru/" + user.avatar;
-  image.classList.add("border-circle", "mr-2");
-  element.appendChild(image);
-
-  const nickname = document.createElement("div");
-  nickname.classList.add("flex", "align-items-center");
-  const tag = document.createElement("span");
-  tag.innerText = user.tag;
-  tag.classList.add(
-    "p-1",
-    "bg-primary",
-    "border-round-md",
-    "text-color",
-    "font-bold",
-    "mr-1"
-  );
-  nickname.appendChild(tag);
-  const nicknameContent = document.createElement("span");
-  nicknameContent.innerText = user.nickname;
-  nicknameContent.classList.add("font-bold", "select-all");
-  if (user.isAdmin)
-    nicknameContent.classList.add("text-orange-500");
-  nickname.appendChild(nicknameContent);
-  element.appendChild(nickname);
-
-  return element;
-}
-
 function loadData() {
-  if (!localStorage.getItem("auth_credentials")) {
-    state.isLoading = false;
-    state.showLogin = true;
-    return render();
-  }
+  if (!localStorage.getItem("session_info"))
+    return window.location.replace("../login/index.html");
+  const sessionInfo = JSON.parse(localStorage.getItem("session_info"));
 
-  state.login = JSON.parse(localStorage.getItem("auth_credentials"));
-  checkLogin();
+  if (new Date() > new Date(sessionInfo.expires)) return window.location.replace('../login/index.html');  
+  loadStatus();
 }
 
 async function loadStatus() {
@@ -227,6 +149,9 @@ async function loadStatus() {
   const parsedDocument = parser.parseFromString(response.data, "text/html");
 
   const actionStatusDiv = parsedDocument.querySelector(".action-status");
+  if (!actionStatusDiv)
+    return logout();
+  
   const currentActivity = Array.from(
     actionStatusDiv.querySelector(".active").classList.values()
   )[1];
@@ -273,66 +198,7 @@ async function loadStatus() {
 }
 
 function logout() {
-  localStorage.removeItem("session_info");
-  state.isLoading = false;
-  state.showLogin = true;
-  state.showActions = false;
-  render();
-}
-
-async function checkLogin(force = false) {
-  state.isLoading = true;
-  state.showLogin = false;
-  render();
-
-  if (!force && localStorage.getItem("session_info")) {
-    const sessionInfo = JSON.parse(localStorage.getItem("session_info"));
-
-    if (new Date() < new Date(sessionInfo.expires)) return loadStatus();
-  }
-
-  localStorage.setItem(
-    "auth_credentials",
-    JSON.stringify({ login: state.login.login, password: state.login.password })
-  );
-
-  const response = await window.electronAPI.postRequest(
-    "https://gta-journal.ru/api.login",
-    {
-      login: state.login.login,
-      password: state.login.password,
-    },
-    {
-      headers: {
-        "Accept-Language": "ru-RU,ru;q=0.9",
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
-      },
-    }
-  );
-
-  if (response.data.res == 0) {
-    state.isLoading = false;
-    state.showLogin = true;
-    localStorage.removeItem("auth_credentials");
-    render();
-    return alert("Неверные данные авторизации");
-  }
-
-  const cookies = response.headers["set-cookie"];
-
-  const parsedCookies = parseCookies(cookies);
-  localStorage.setItem(
-    "session_info",
-    JSON.stringify({
-      id: parsedCookies.find((cookie) => cookie.name == "id").value,
-      usid: parsedCookies.find((cookie) => cookie.name == "usid").value,
-      expires: parsedCookies[0].expires,
-    })
-  );
-
-  loadStatus();
+  window.location.replace("../logout/index.html");
 }
 
 async function setStatus(code) {
