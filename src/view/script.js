@@ -48,6 +48,16 @@ document
   ?.addEventListener("click", () => checkLogin(true));
 
 document
+  .getElementById("window_hide")
+  ?.addEventListener("click", () => {
+    console.log(0)
+    window.electronAPI.hideWindow();
+  });
+document
+  .getElementById("window_close")
+  ?.addEventListener("click", () => window.electronAPI.closeWindow());
+
+document
   .getElementById("online_button")
   ?.addEventListener("click", () => setStatus(1));
 document

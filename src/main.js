@@ -22,6 +22,8 @@ function createWindow() {
   });
 
   win.loadFile(path.join(__dirname, "./view/index.html"));
+
+  return win;
 }
 
 async function handleAsyncGetRequest(_, url, options) {
@@ -45,12 +47,12 @@ async function handleAsyncPostRequest(_, url, data, options) {
 }
 
 app.whenReady().then(() => {
-  createWindow();
+  const window = createWindow();
 
   ipcMain.handle("requests:get", handleAsyncGetRequest)
   ipcMain.handle("requests:post", handleAsyncPostRequest)
 
-  ipcMain.on("hide-window", () => app.hide());
+  ipcMain.on("hide-window", () => window.minimize());
   ipcMain.on("close-window", () => app.quit());
 
   app.on("activate", () => {

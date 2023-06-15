@@ -15,9 +15,9 @@
         <span class="font-bold text-xl mr-2">GTA Journal</span>
         <span style="background-color: var(--primary-color); border-radius: 5px;padding: 5px 10px;" class="font-bold text-md">ALPHA</span>
       </div>
-      <div class="flex align-items-center mr-2">
-        <span style="margin-top: -16px;" onclick="window.electronAPI.hideWindow()" class="font-bold select-none cursor-pointer p-2 text-xl">_</span>
-        <span class="font-bold select-none cursor-pointer p-2 text-xl" onclick="window.electronAPI.closeWindow()">х</span>
+      <div class="flex align-items-center mr-2 z-2" style="-webkit-app-region: none;">
+        <span id="window_hide" style="margin-top: -16px;" class="z-2 font-bold select-none cursor-pointer p-2 text-xl">_</span>
+        <span id="window_close" class="z-2 font-bold select-none cursor-pointer p-2 text-xl">х</span>
       </div>
     </div>
     <main>

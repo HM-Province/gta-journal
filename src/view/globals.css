@@ -61,3 +61,6 @@ button.yellow {
 button.green {
   background-color: var(--green);
 }
+button.outline {
+  background-color: none;
+}
