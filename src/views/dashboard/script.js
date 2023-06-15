@@ -13,6 +13,11 @@ let state = {
     afk: [],
     offline: [],
   },
+  stats: {
+    okb: 0,
+    cgbp: 0,
+    cgbn: 0
+  }
 };
 
 const activityStatuses = [
@@ -75,6 +80,10 @@ function renderActivity() {
   document.getElementById("activity-status").innerText = activityStatus.title;
   document.getElementById("activity-status").style = `color: var(${activityStatus.color})`;
   document.getElementById("activity-nickname").innerText = state.currentUser.username;
+
+  document.getElementById("stats:okb:users").innerText = state.stats.okb;
+  document.getElementById("stats:cgbp:users").innerText = state.stats.cgbp;
+  document.getElementById("stats:cgbn:users").innerText = state.stats.cgbn;
 
   const onlineUsers = document.getElementById("online_users");
   if (!onlineUsers) return;
@@ -176,7 +185,7 @@ async function loadStatus() {
       const user = {
         isAdmin: !!item.querySelector("span.admin"),
         tag: item.querySelector(".username").innerText.match(/\[.+\]/g)[0],
-        nickname: item.querySelector(".username").innerText.substring(item.querySelector(".username").innerText.match(/\[.+\]/g)[0].length),
+        username: item.querySelector(".username").innerText.substring(item.querySelector(".username").innerText.match(/\[.+\]/g)[0].length),
         avatar: item.getElementsByTagName("img")[0].getAttribute("src"),
       };
 
@@ -191,6 +200,12 @@ async function loadStatus() {
     tag: currentUser.innerText.match(/\[.+\]/g)[0],
     username: currentUser.innerText.substring(currentUser.innerText.match(/\[.+\]/g)[0].length),
   }
+
+  const allUsers = [ ...state.users.afk, ...state.users.offline, ...state.users.online ];
+
+  state.stats.okb = allUsers.filter((user) => user.tag?.includes('ОКБ-М')).length - 1;
+  state.stats.cgbn = allUsers.filter((user) => user.tag?.includes('ЦГБ-Н')).length - 1;
+  state.stats.cgbp = allUsers.filter((user) => user.tag?.includes('ЦГБ-П')).length - 1;
 
   state.isLoading = false;
   state.showActions = true;

@@ -48,7 +48,7 @@ export function createUserMiniCard(user) {
   );
   nickname.appendChild(tag);
   const nicknameContent = document.createElement("span");
-  nicknameContent.innerText = user.nickname;
+  nicknameContent.innerText = user.username;
   nicknameContent.classList.add("font-bold", "select-all");
   if (user.isAdmin)
     nicknameContent.classList.add("text-orange-500");
