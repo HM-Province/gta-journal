@@ -1,12 +1,63 @@
+import parseCookies from "../scripts/set-cookie.js";
+
 let state = {
   isLoading: true,
   showLogin: false,
-  showActions: false
-}
+  showActions: false,
+  login: {
+    login: "",
+    password: "",
+  },
+  status: 0,
+};
+
+const activityStatuses = [
+  {
+    id: 0,
+    value: "offline",
+    title: "Оффлайн",
+  },
+  {
+    id: 1,
+    value: "online",
+    title: "Онлайн",
+  },
+  {
+    id: 2,
+    value: "afk",
+    title: "АФК",
+  },
+];
+
+const loginField = document.getElementById("login_input");
+const passwordField = document.getElementById("password_input");
+
+loginField.addEventListener("input", (ev) => {
+  state.login.login = ev.target.value;
+});
+
+passwordField.addEventListener("input", (ev) => {
+  state.login.password = ev.target.value;
+});
+
+document
+  .getElementById("logout_button")
+  ?.addEventListener("click", () => logout());
+document
+  .getElementById("login_button")
+  ?.addEventListener("click", () => checkLogin(true));
+
+document
+  .getElementById("online_button")
+  ?.addEventListener("click", () => setStatus(1));
+document
+  .getElementById("afk_button")
+  ?.addEventListener("click", () => setStatus(2));
+document
+  .getElementById("offline_button")
+  ?.addEventListener("click", () => setStatus(0));
 
 function render() {
-  console.log("Called render")
-
   if (state.isLoading) {
     document.getElementById("loading")?.classList.remove("hidden");
   } else {
@@ -21,9 +72,17 @@ function render() {
 
   if (state.showActions) {
     document.getElementById("actions")?.classList.remove("hidden");
+    renderActivity();
   } else {
     document.getElementById("actions")?.classList.add("hidden");
   }
+}
+
+function renderActivity() {
+  console.log(state.status);
+  document.getElementById("activity-status").innerText = activityStatuses.find(
+    (status) => status.id == state.status
+  )?.title;
 }
 
 function loadData() {
@@ -33,9 +92,135 @@ function loadData() {
     return render();
   }
 
+  state.login = JSON.parse(localStorage.getItem("auth_credentials"));
+  checkLogin();
+}
+
+async function loadStatus() {
+  state.isLoading = true;
+  state.showActions = false;
+  render();
+
+  const sessionInfo = JSON.parse(localStorage.getItem("session_info"));
+
+  const response = await window.electronAPI.getRequest(
+    "https://gta-journal.ru/dashboard",
+    {
+      headers: {
+        "Accept-Language": "ru-RU,ru;q=0.9",
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+        Cookie: `id=${sessionInfo.id}; usid=${sessionInfo.usid}`,
+      },
+    }
+  );
+
+  console.log(response, response.data);
+
+  const parser = new DOMParser();
+  const parsedDocument = parser.parseFromString(response.data, "text/html");
+
+  const actionStatusDiv = parsedDocument.querySelector(".action-status");
+  const currentActivity = Array.from(
+    actionStatusDiv.querySelector(".active").classList.values()
+  )[1];
+
+  state.status = activityStatuses.find(
+    (status) => status.value === currentActivity
+  ).id;
   state.isLoading = false;
   state.showActions = true;
-  return render();
+  render();
+}
+
+function logout() {
+  localStorage.removeItem("session_info");
+  state.isLoading = false;
+  state.showLogin = true;
+  state.showActions = false;
+  render();
+}
+
+async function checkLogin(force = false) {
+  state.isLoading = true;
+  state.showLogin = false;
+  render();
+
+  if (!force && localStorage.getItem("session_info")) {
+    const sessionInfo = JSON.parse(localStorage.getItem("session_info"));
+
+    if (new Date() < new Date(sessionInfo.expires)) return loadStatus();
+  }
+
+  localStorage.setItem(
+    "auth_credentials",
+    JSON.stringify({ login: state.login.login, password: state.login.password })
+  );
+
+  const response = await window.electronAPI.postRequest(
+    "https://gta-journal.ru/api.login",
+    {
+      login: state.login.login,
+      password: state.login.password,
+    },
+    {
+      headers: {
+        "Accept-Language": "ru-RU,ru;q=0.9",
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+      },
+    }
+  );
+
+  if (response.data.res == 0) {
+    state.isLoading = false;
+    state.showLogin = true;
+    localStorage.removeItem("auth_credentials");
+    render();
+    return alert("Неверные данные авторизации");
+  }
+
+  const cookies = response.headers["set-cookie"];
+
+  const parsedCookies = parseCookies(cookies);
+  localStorage.setItem(
+    "session_info",
+    JSON.stringify({
+      id: parsedCookies.find((cookie) => cookie.name == "id").value,
+      usid: parsedCookies.find((cookie) => cookie.name == "usid").value,
+      expires: parsedCookies[0].expires,
+    })
+  );
+
+  loadStatus();
+}
+
+async function setStatus(code) {
+  state.isLoading = true;
+  state.showActions = false;
+  render();
+
+  const sessionInfo = JSON.parse(localStorage.getItem("session_info"));
+
+  await window.electronAPI.postRequest(
+    "https://gta-journal.ru/api.editstatus",
+    {
+      status: code,
+    },
+    {
+      headers: {
+        "Accept-Language": "ru-RU,ru;q=0.9",
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+        Cookie: `id=${sessionInfo.id}; usid=${sessionInfo.usid}`,
+      },
+    }
+  );
+
+  loadStatus();
 }
 
 loadData();

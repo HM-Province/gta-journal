@@ -1,10 +1,8 @@
-window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  }
+const { contextBridge, ipcRenderer } = require('electron')
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type])
-  }
+contextBridge.exposeInMainWorld('electronAPI', {
+  getRequest: (url, options) => ipcRenderer.invoke('requests:get', url, options),
+  postRequest: (url, data, options) => ipcRenderer.invoke('requests:post', url, data, options),
+  closeWindow: () => ipcRenderer.send("close-window"),
+  hideWindow: () => ipcRenderer.send("hide-window")
 })

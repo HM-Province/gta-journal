@@ -7,11 +7,18 @@
 
     <link rel="stylesheet" href="globals.css">
     <link rel="stylesheet" href="../styles/alarm-spinner.css">
+    <script src="jquery.js"></script>
   </head>
   <body>
-    <div style="-webkit-app-region: drag;" class="flex w-12 pr-2 align-items-center justify-content-end">
-      <span style="margin-top: -16px;" class="font-bold cursor-pointer p-2 text-xl">_</span>
-      <span class="font-bold select-none cursor-pointer p-2 text-xl">х</span>
+    <div style="-webkit-app-region: drag; background-color: var(--card);" class="flex w-12 mb-4 align-items-center justify-content-between">
+      <div class="ml-2 flex align-items-center">
+        <span class="font-bold text-xl mr-2">GTA Journal</span>
+        <span style="background-color: var(--primary-color); border-radius: 5px;padding: 5px 10px;" class="font-bold text-md">ALPHA</span>
+      </div>
+      <div class="flex align-items-center mr-2">
+        <span style="margin-top: -16px;" onclick="window.electronAPI.hideWindow()" class="font-bold select-none cursor-pointer p-2 text-xl">_</span>
+        <span class="font-bold select-none cursor-pointer p-2 text-xl" onclick="window.electronAPI.closeWindow()">х</span>
+      </div>
     </div>
     <main>
       <section id="loading" style="height: 80vh;" class="w-12 flex flex-column align-items-center justify-content-center">
@@ -21,11 +28,19 @@
         <span class="text-2xl font-bold mx-auto mb-4">Введите данные</span>
         <input class="mb-2" type="text" name="login" id="login_input" placeholder="Логин">
         <input class="mb-2" type="password" name="password" id="password_input" placeholder="Пароль">
-        <button>Войти</button>
+        <button id="login_button">Войти</button>
       </section>
-      <section id="actions" class="hidden"></section>
+      <section id="actions" class="flex flex-column justify-content-center hidden">
+        <span class="mx-auto text-2xl mb-3">Вы сейчас <span id="activity-status" class="font-bold text-2xl"></span></span>
+        <div class="mx-auto flex gap-2">
+          <button class="green" id="online_button">Онлайн</button>
+          <button class="yellow" id="afk_button">АФК</button>
+          <button class="red" id="offline_button">Оффлайн</button>
+        </div>
+        <button id="logout_button" class="red mx-auto mt-4">Выйти</button>
+      </section>
     </main>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
