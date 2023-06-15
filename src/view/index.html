@@ -10,7 +10,7 @@
     <script src="jquery.js"></script>
   </head>
   <body>
-    <div style="-webkit-app-region: drag; background-color: var(--card);" class="flex w-12 mb-4 align-items-center justify-content-between">
+    <div style="-webkit-app-region: drag;" class="flex surface-hover w-12 mb-4 align-items-center justify-content-between">
       <div class="ml-2 flex align-items-center">
         <span class="font-bold text-xl mr-2">GTA Journal</span>
         <span style="background-color: var(--primary-color); border-radius: 5px;padding: 5px 10px;" class="font-bold text-md">ALPHA</span>
@@ -37,7 +37,24 @@
           <button class="yellow" id="afk_button">АФК</button>
           <button class="red" id="offline_button">Оффлайн</button>
         </div>
-        <button id="logout_button" class="red mx-auto mt-4">Выйти</button>
+        <div class="flex mt-3 mb-2 gap-2 align-items-center justify-content-center">
+          <button id="refresh_button" >Обновить информацию</button>
+          <button id="logout_button" class="red">Выйти</button>
+        </div>
+        <div class="grid mx-auto">
+          <div class="col">
+            <span id="online_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">Онлайн пользователи</span>
+            <div id="online_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
+          </div>
+          <div class="col">
+            <span id="afk_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">АФК пользователи</span>
+            <div id="afk_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
+          </div>
+          <div class="col">
+            <span id="offline_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">Оффлайн пользователи</span>
+            <div id="offline_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
+          </div>
+        </div>
       </section>
     </main>
 

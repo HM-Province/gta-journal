@@ -9,6 +9,11 @@ let state = {
     password: "",
   },
   status: 0,
+  users: {
+    online: [],
+    afk: [],
+    offline: [],
+  },
 };
 
 const activityStatuses = [
@@ -44,15 +49,16 @@ document
   .getElementById("logout_button")
   ?.addEventListener("click", () => logout());
 document
+  .getElementById("refresh_button")
+  ?.addEventListener("click", () => loadStatus());
+document
   .getElementById("login_button")
   ?.addEventListener("click", () => checkLogin(true));
 
-document
-  .getElementById("window_hide")
-  ?.addEventListener("click", () => {
-    console.log(0)
-    window.electronAPI.hideWindow();
-  });
+document.getElementById("window_hide")?.addEventListener("click", () => {
+  console.log(0);
+  window.electronAPI.hideWindow();
+});
 document
   .getElementById("window_close")
   ?.addEventListener("click", () => window.electronAPI.closeWindow());
@@ -89,10 +95,83 @@ function render() {
 }
 
 function renderActivity() {
-  console.log(state.status);
   document.getElementById("activity-status").innerText = activityStatuses.find(
     (status) => status.id == state.status
   )?.title;
+
+  const onlineUsers = document.getElementById("online_users");
+  if (!onlineUsers) return;
+  onlineUsers.replaceChildren([]);
+
+  for (const i in state.users.online) {
+    const user = state.users.online[i];
+    const element = createUserElement(user);
+
+    onlineUsers.appendChild(element);
+  }
+
+  const afkUsers = document.getElementById("afk_users");
+  if (!afkUsers) return;
+  afkUsers.replaceChildren([]);
+
+  for (const i in state.users.afk) {
+    const user = state.users.afk[i];
+    const element = createUserElement(user);
+
+    afkUsers.appendChild(element);
+  }
+
+  const offlineUsers = document.getElementById("offline_users");
+  if (!offlineUsers) return;
+  offlineUsers.replaceChildren([]);
+
+  for (const i in state.users.offline) {
+    const user = state.users.offline[i];
+    const element = createUserElement(user);
+
+    offlineUsers.appendChild(element);
+  }
+}
+
+function createUserElement(user) {
+  const element = document.createElement("div");
+
+  element.classList.add(
+    "px-3",
+    "py-2",
+    "flex",
+    "align-items-center",
+    "surface-card",
+    "px-3",
+    "py-2",
+    "border-round-xl"
+  );
+
+  const image = document.createElement("img");
+  image.src = "https://gta-journal.ru/" + user.avatar;
+  image.classList.add("border-circle", "mr-2");
+  element.appendChild(image);
+
+  const nickname = document.createElement("div");
+  nickname.classList.add("flex", "align-items-center");
+  const tag = document.createElement("span");
+  tag.innerText = user.tag;
+  tag.classList.add(
+    "p-1",
+    "bg-primary",
+    "border-round-md",
+    "text-color",
+    "font-bold",
+    "mr-1"
+  );
+  nickname.appendChild(tag);
+  const nicknameContent = document.createElement("span");
+  nicknameContent.innerText = user.nickname;
+  nicknameContent.classList.add("font-bold", "select-all");
+  nickname.appendChild(nicknameContent);
+  element.appendChild(nickname);
+
+  return element;
 }
 
 function loadData() {
@@ -139,6 +218,33 @@ async function loadStatus() {
   state.status = activityStatuses.find(
     (status) => status.value === currentActivity
   ).id;
+  state.users = {
+    online: [],
+    afk: [],
+    offline: [],
+  };
+
+  const userColumns = parsedDocument.querySelectorAll(".col-12.col-lg-4");
+  for (const i in Array.from(userColumns.keys())) {
+    const column = userColumns[i];
+
+    const items = column.querySelectorAll(".item");
+    for (const j in Array.from(items.keys())) {
+      const item = items[j];
+
+      const user = {
+        tag: item.querySelector(".username").innerText.match(/\[.+\]/g)[0],
+        nickname: item.querySelector(".username").innerText.substring(item.querySelector(".username").innerText.match(/\[.+\]/g)[0].length),
+        avatar: item.getElementsByTagName("img")[0].getAttribute("src"),
+      };
+
+      if (i == 0) state.users.online.push(user);
+      else if (i == 1) state.users.afk.push(user);
+      else state.users.offline.push(user);
+    }
+  }
+  console.log(state.users);
+
   state.isLoading = false;
   state.showActions = true;
   render();
