@@ -9,6 +9,10 @@ let state = {
     password: "",
   },
   status: 0,
+  currentUser: {
+    tag: "N/A",
+    username: "Anonymous"
+  },
   users: {
     online: [],
     afk: [],
@@ -21,16 +25,19 @@ const activityStatuses = [
     id: 0,
     value: "offline",
     title: "Оффлайн",
+    color: "--red-600"
   },
   {
     id: 1,
     value: "online",
     title: "Онлайн",
+    color: "--green-600"
   },
   {
     id: 2,
     value: "afk",
     title: "АФК",
+    color: "--yellow-600"
   },
 ];
 
@@ -94,13 +101,18 @@ function render() {
 }
 
 function renderActivity() {
-  document.getElementById("activity-status").innerText = activityStatuses.find(
+  const activityStatus = activityStatuses.find(
     (status) => status.id == state.status
-  )?.title;
+  );
+  document.getElementById("activity-status").innerText = activityStatus.title;
+  document.getElementById("activity-status").style = `color: var(${activityStatus.color})`;
+  document.getElementById("activity-nickname").innerText = state.currentUser.username;
 
   const onlineUsers = document.getElementById("online_users");
   if (!onlineUsers) return;
   onlineUsers.replaceChildren([]);
+
+  document.getElementById("online_users_title").innerText = `Онлайн пользователи (${state.users.online.length})`;
 
   for (const i in state.users.online) {
     const user = state.users.online[i];
@@ -113,6 +125,8 @@ function renderActivity() {
   if (!afkUsers) return;
   afkUsers.replaceChildren([]);
 
+  document.getElementById("afk_users_title").innerText = `AFK пользователи (${state.users.afk.length})`;
+
   for (const i in state.users.afk) {
     const user = state.users.afk[i];
     const element = createUserElement(user);
@@ -123,6 +137,8 @@ function renderActivity() {
   const offlineUsers = document.getElementById("offline_users");
   if (!offlineUsers) return;
   offlineUsers.replaceChildren([]);
+
+  document.getElementById("offline_users_title").innerText = `Оффлайн пользователи (${state.users.offline.length})`;
 
   for (const i in state.users.offline) {
     const user = state.users.offline[i];
@@ -143,7 +159,8 @@ function createUserElement(user) {
     "surface-card",
     "px-3",
     "py-2",
-    "border-round-xl"
+    "border-round-xl",
+    "shadow-3"
   );
 
   const image = document.createElement("img");
@@ -167,6 +184,8 @@ function createUserElement(user) {
   const nicknameContent = document.createElement("span");
   nicknameContent.innerText = user.nickname;
   nicknameContent.classList.add("font-bold", "select-all");
+  if (user.isAdmin)
+    nicknameContent.classList.add("text-orange-500");
   nickname.appendChild(nicknameContent);
   element.appendChild(nickname);
 
@@ -230,6 +249,7 @@ async function loadStatus() {
       const item = items[j];
 
       const user = {
+        isAdmin: !!item.querySelector("span.admin"),
         tag: item.querySelector(".username").innerText.match(/\[.+\]/g)[0],
         nickname: item.querySelector(".username").innerText.substring(item.querySelector(".username").innerText.match(/\[.+\]/g)[0].length),
         avatar: item.getElementsByTagName("img")[0].getAttribute("src"),
@@ -239,6 +259,12 @@ async function loadStatus() {
       else if (i == 1) state.users.afk.push(user);
       else state.users.offline.push(user);
     }
+  }
+
+  const currentUser = parsedDocument.querySelector("p.username");
+  state.currentUser = {
+    tag: currentUser.innerText.match(/\[.+\]/g)[0],
+    username: currentUser.innerText.substring(currentUser.innerText.match(/\[.+\]/g)[0].length),
   }
 
   state.isLoading = false;
