@@ -36,7 +36,7 @@ button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  color: var(--primary-color-text);
+  color: #fff;
   background-color: var(--primary-color);
   transition: all .3s ease-in-out;
   font-weight: 600;

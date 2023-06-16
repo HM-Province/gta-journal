@@ -5,48 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Журнал Активности - Панель управления</title>
 
-    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="../../styles/globals.css" />
     <link id="css-theme" rel="stylesheet" href="../../styles/dark.css" />
-    <link rel="stylesheet" href="../../styles/alarm-spinner.css">
+    <link rel="stylesheet" href="../../styles/alarm-spinner.css" />
   </head>
   <body>
     <v-window-topbar></v-window-topbar>
     <main>
       <v-navigation></v-navigation>
-      <section id="loading" style="height: 80vh;" class="w-12 flex flex-column align-items-center justify-content-center">
+      <section
+        id="loading"
+        style="height: 80vh"
+        class="w-12 flex flex-column align-items-center justify-content-center"
+      >
         <div class="alarm-spinner"></div>
       </section>
-      <section id="actions" class="flex flex-column justify-content-center hidden">
-        <div class="surface-card flex flex-column justify-content-center border-round-xl py-4">
-          <span class="mx-auto text-2xl mb-2">Вошли как <span id="activity-nickname" class="font-bold text-2xl"></span></span>
-        <span class="mx-auto text-2xl mb-3">Вы сейчас <span id="activity-status" class="font-bold text-2xl"></span></span>
-        <div class="mx-auto flex gap-2">
-          <button class="green" id="online_button">Онлайн</button>
-          <button class="yellow" id="afk_button">АФК</button>
-          <button class="red" id="offline_button">Оффлайн</button>
-        </div>
-        <div class="flex mt-3 mb-2 gap-2 align-items-center justify-content-center">
-          <button id="refresh_button" >Обновить информацию</button>
-          <button id="logout_button" class="red">Выйти</button>
-        </div>
+      <section
+        id="actions"
+        class="flex flex-column justify-content-center hidden"
+      >
+        <div
+          class="surface-card flex flex-column justify-content-center border-round-xl py-4 shadow-4"
+        >
+          <span class="mx-auto text-2xl mb-2"
+            >Вошли как
+            <span id="activity-nickname" class="font-bold text-2xl"></span
+          ></span>
+          <span class="mx-auto text-2xl mb-3"
+            >Вы сейчас
+            <span id="activity-status" class="font-bold text-2xl"></span
+          ></span>
+          <div class="mx-auto flex gap-2">
+            <button class="green" id="online_button">Онлайн</button>
+            <button class="yellow" id="afk_button">АФК</button>
+            <button class="red" id="offline_button">Оффлайн</button>
+          </div>
+          <div
+            class="flex mt-3 mb-2 gap-2 align-items-center justify-content-center"
+          >
+            <button id="refresh_button">Обновить информацию</button>
+            <button id="logout_button" class="red">Выйти</button>
+          </div>
         </div>
         <div class="flex flex-wrap gap-4 mx-auto my-4">
-          <span class="font-bold select-none surface-hover p-2 border-round-md">ОКБ: <span id="stats:okb:users">0</span></span>
-          <span class="font-bold select-none surface-hover p-2 border-round-md">ЦГБ-П: <span id="stats:cgbp:users">0</span></span>
-          <span class="font-bold select-none surface-hover p-2 border-round-md">ЦГБ-Н: <span id="stats:cgbn:users">0</span></span>
+          <span
+            class="shadow-3 font-bold select-none surface-hover p-2 border-round-md"
+            >ОКБ: <span id="stats:okb:users">0</span></span
+          >
+          <span
+            class="shadow-3 font-bold select-none surface-hover p-2 border-round-md"
+            >ЦГБ-П: <span id="stats:cgbp:users">0</span></span
+          >
+          <span
+            class="shadow-3 font-bold select-none surface-hover p-2 border-round-md"
+            >ЦГБ-Н: <span id="stats:cgbn:users">0</span></span
+          >
         </div>
         <div class="grid mx-auto">
           <div class="col">
-            <span id="online_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">Онлайн пользователи</span>
-            <div id="online_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
+            <span
+              id="online_users_title"
+              class="mx-auto mt-3 mb-2 font-bold text-2xl"
+              >Онлайн пользователи</span
+            >
+            <div
+              id="online_users"
+              class="flex flex-column gap-2 mt-2 mx-2"
+            ></div>
           </div>
           <div class="col">
-            <span id="afk_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">АФК пользователи</span>
+            <span
+              id="afk_users_title"
+              class="mx-auto mt-3 mb-2 font-bold text-2xl"
+              >АФК пользователи</span
+            >
             <div id="afk_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
           </div>
           <div class="col">
-            <span id="offline_users_title" class="mx-auto mt-3 mb-2 font-bold text-2xl">Оффлайн пользователи</span>
-            <div id="offline_users" class="flex flex-column gap-2 mt-2 mx-2"></div>
+            <span
+              id="offline_users_title"
+              class="mx-auto mt-3 mb-2 font-bold text-2xl"
+              >Оффлайн пользователи</span
+            >
+            <div
+              id="offline_users"
+              class="flex flex-column gap-2 mt-2 mx-2"
+            ></div>
           </div>
         </div>
       </section>
