@@ -29,7 +29,7 @@ for (const i in topbars) {
   titleDiv.appendChild(appName);
 
   const appTag = document.createElement("span");
-  appTag.innerText = "ALPHA";
+  appTag.innerText = "RC";
   appTag.setAttribute(
     "style",
     "background-color: var(--primary-color); border-radius: 5px;padding: 5px 10px;"

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Журнал Активности - Настройки</title>
+
+    <link rel="stylesheet" href="../../styles/globals.css" />
+    <link id="css-theme" rel="stylesheet" href="../../styles/dark.css" />
+    <link rel="stylesheet" href="../../styles/alarm-spinner.css" />
+  </head>
+  <body>
+    <v-window-topbar></v-window-topbar>
+    <main>
+      <v-navigation></v-navigation>
+      <section
+        id="settings:info"
+        class="flex flex-column justify-content-center"
+      >
+        <h1 class="mx-auto">Настройки</h1>
+        <span class="mx-auto font-bold text-xl mb-2">Тема оформления</span>
+        <div class="split-button mx-auto">
+          <button id="settings:theme:light">Мазохизм</button>
+          <button id="settings:theme:dark">Тёмная</button>
+        </div>
+
+        <button id="settings:save" class="green mx-auto mt-4">Применить изменения</button>
+      </section>
+    </main>
+
+    <script src="../../scripts/utils/theme-selector.js"></script>
+    <script src="../../scripts/components/window-topbar.js"></script>
+    <script src="../../scripts/components/navigation.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

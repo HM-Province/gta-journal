@@ -1,6 +1,5 @@
 @import "../fonts/stylesheet.css";
 @import "../styles/primeflex.css";
-@import "./dark.css";
 
 * {
   font-family: var(--font-family);
@@ -37,8 +36,9 @@ button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  color: var(--font-color);
+  color: var(--primary-color-text);
   background-color: var(--primary-color);
+  transition: all .3s ease-in-out;
   font-weight: 600;
   cursor: pointer;
   font-size: 18px;
@@ -60,4 +60,29 @@ main {
   margin-top: 60px;
   padding-left: 50px;
   padding-right: 50px;
+}
+
+.split-button {
+  display: flex;
+}
+
+.split-button button {
+  border-radius: 0;
+  background-color: var(--surface-border);
+  color: var(--text-color);
+}
+
+.split-button button.active, .split-button button:hover {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+}
+
+.split-button button:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.split-button button:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }

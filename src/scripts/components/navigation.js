@@ -36,17 +36,21 @@ for (const i in navigators) {
     "mb-2",
     "justify-content-center",
     "gap-2",
-    "mx-auto"
+    "mx-auto",
+    "overflow-y-auto"
   );
 
   element.appendChild(
     createNavigationLink("Панель управления", "../dashboard/index.html")
   );
-  element.appendChild(
-    createNavigationLink("Ваша статистика", "../stats/index.html")
-  );
+  // element.appendChild(
+  //   createNavigationLink("Ваша статистика", "../stats/index.html")
+  // );
   element.appendChild(
     createNavigationLink("Топ 10", "../top/index.html")
+  );
+  element.appendChild(
+    createNavigationLink("Настройки", "../settings/index.html")
   );
 
   navigator.parentNode?.replaceChild(element, navigator);

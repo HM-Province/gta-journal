@@ -21,22 +21,22 @@ function getTableRow(position, user) {
   element.setAttribute("style", `height: 35px; background-color: var(${cityColor});`);
 
   const positionHolder = document.createElement("td");
-  positionHolder.classList.add("p-2", "font-bold");
+  positionHolder.classList.add("p-2", "font-bold", "text-white");
   positionHolder.innerText = `${position}`;
   element.appendChild(positionHolder);
 
   const usernameHolder = document.createElement("td");
-  usernameHolder.classList.add("px-2");
+  usernameHolder.classList.add("px-2", "text-white");
   usernameHolder.innerText = `${user.username}`;
   element.appendChild(usernameHolder);
 
   const timeHolder = document.createElement("td");
-  timeHolder.classList.add("px-2");
+  timeHolder.classList.add("px-2", "text-white");
   timeHolder.innerText = user.time;
   element.appendChild(timeHolder);
 
   const loadUpdateHolder = document.createElement("td");
-  loadUpdateHolder.classList.add("px-2");
+  loadUpdateHolder.classList.add("px-2", "text-white");
   loadUpdateHolder.innerText = user.lastUpdate;
   element.appendChild(loadUpdateHolder);
 
