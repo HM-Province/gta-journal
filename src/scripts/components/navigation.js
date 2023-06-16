@@ -42,9 +42,9 @@ for (const i in navigators) {
   element.appendChild(
     createNavigationLink("Панель управления", "../dashboard/index.html")
   );
-  // element.appendChild(
-  //   createNavigationLink("Ваша статистика", "../stats/index.html")
-  // );
+  element.appendChild(
+    createNavigationLink("Ваша статистика", "../stats/index.html")
+  );
   element.appendChild(
     createNavigationLink("Топ 10", "../top/index.html")
   );

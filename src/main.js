@@ -14,6 +14,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 650,
     height: 400,
+    minWidth: 650,
+    minHeight: 400,
     frame: false,
     titleBarStyle: "hidden",
     webPreferences: {
