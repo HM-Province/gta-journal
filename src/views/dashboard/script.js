@@ -184,7 +184,7 @@ async function loadStatus() {
 
       const user = {
         isAdmin: !!item.querySelector("span.admin"),
-        tag: item.querySelector(".username").innerText.match(/\[.+\]/g)[0],
+        tag: item.querySelector(".username").innerText.match(/\[.+\]/g)[0]?.replace(/\[|\]/g, ""),
         username: item.querySelector(".username").innerText.substring(item.querySelector(".username").innerText.match(/\[.+\]/g)[0].length),
         avatar: item.getElementsByTagName("img")[0].getAttribute("src"),
       };

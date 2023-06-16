@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Журнал Активности - Топ 10</title>
+
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="../../styles/alarm-spinner.css">
+  </head>
+  <body>
+    <v-window-topbar></v-window-topbar>
+    <main>
+      <v-navigation></v-navigation>
+      <section id="loading" style="height: 80vh;" class="w-12 flex flex-column align-items-center justify-content-center">
+        <div class="alarm-spinner"></div>
+      </section>
+      <section id="stats" class="flex flex-column justify-content-center hidden">
+      </section>
+    </main>
+
+    <script src="../../scripts/components/window-topbar.js"></script>
+    <script src="../../scripts/components/navigation.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

@@ -6,6 +6,8 @@
  * @property {string} tag
  */
 
+import { cities } from "../constants/cities.js";
+
 
 /**
  * 
@@ -16,6 +18,7 @@ export function createUserMiniCard(user) {
   const element = document.createElement("div");
 
   element.classList.add(
+    "relative",
     "px-3",
     "py-2",
     "flex",
@@ -35,18 +38,23 @@ export function createUserMiniCard(user) {
   element.appendChild(image);
 
   const nickname = document.createElement("div");
-  nickname.classList.add("flex", "align-items-center");
+  nickname.classList.add("flex", "align-items-center", "z-2");
   const tag = document.createElement("span");
   tag.innerText = user.tag;
   tag.classList.add(
+    "z-1",
+    "absolute",
     "p-1",
-    "bg-primary",
     "border-round-md",
-    "text-color",
+    "text-sm",
     "font-bold",
-    "mr-1"
+    "mr-1",
+    "select-none"
   );
-  nickname.appendChild(tag);
+
+  const cityColor = cities.find((city) => user.tag.includes(city.tag))?.color || "--text-color";
+  tag.setAttribute("style", `top: 1px; right: 1px;opacity: 0.7;color: var(${cityColor})`);
+  element.appendChild(tag);
   const nicknameContent = document.createElement("span");
   nicknameContent.innerText = user.username;
   nicknameContent.classList.add("font-bold", "select-all");
