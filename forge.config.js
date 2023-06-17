@@ -7,7 +7,13 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        name: "GTAJournal",
+        title: "GTA Journal",
+        description: "Приложение GTA Journal для ПК",
+        authors: "Gizuzu",
+        setupExe: "Setup.exe",
+      },
     },
   ],
   plugins: [
@@ -32,6 +38,18 @@ module.exports = {
             },
           ],
         },
+      },
+    },
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "HM-Province",
+          name: "gta-journal",
+        },
+        prerelease: true,
       },
     },
   ],

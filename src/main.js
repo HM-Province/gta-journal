@@ -6,11 +6,21 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+// Auto Updater
+require("update-electron-app")({
+  repo: "HM-Province/gta-journal",
+  updateInterval: "1 hour",
+});
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 650,
+    height: 400,
+    minWidth: 650,
+    minHeight: 400,
+    frame: false,
+    titleBarStyle: "hidden",
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
