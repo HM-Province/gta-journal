@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-import axios from "axios";
+const axios = require("axios");
+const fs = require("node:fs");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {

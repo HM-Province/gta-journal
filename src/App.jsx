@@ -19,8 +19,12 @@ const router = createHashRouter([
     element: <Root />,
     children: [
       {
+        path: "/",
+        element: <Dashboard />,
+      },
+      {
         path: "/dashboard",
-        element: <Dashboard />
+        element: <Dashboard />,
       },
       {
         path: "/top",
