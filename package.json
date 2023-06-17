@@ -1,8 +1,8 @@
 {
   "name": "gta-journal",
-  "productName": "gta-journal",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "productName": "GTA Journal",
+  "version": "1.0.0-rc.1",
+  "description": "Оболочка Журнала Активности для МЗ сервера №1 MTA Province",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
