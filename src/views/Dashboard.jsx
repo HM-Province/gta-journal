@@ -5,6 +5,7 @@ import { Button } from "primereact/button";
 import Icon from "@mdi/react";
 import { mdiBriefcase, mdiGhost, mdiLogout, mdiSleep, mdiSync } from "@mdi/js";
 import styles from "../styles/modules/Dashboard.module.css";
+import { cities } from "../constants/cities";
 
 const activityStatuses = [
   {
@@ -26,6 +27,16 @@ const activityStatuses = [
     color: "--yellow-200",
   },
 ];
+
+function UserCard(props) {
+  const cityColor = cities.find((city) => props.tag.includes(city.tag))?.color || "--text-color";
+
+  return <div className="relative px-3 py-2 flex align-items-center surface-ground my-2 border-round-xl shadow-3 hover:surface-hover">
+    <img className="border-circle mr-2 overflow-hidden" src={props.avatar} alt="" />
+    <span className="flex align-items-center z-2 font-bold">{props.username}</span>
+    <span className="z-1 absolute text-sm font-bold select-none mr-2" style={{top: '1px', right: '1px', opacity: 0.7, color: `var(${cityColor})`}}>{props.tag}</span>
+  </div>
+}
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -57,9 +68,10 @@ export default function Dashboard() {
       ...currentUser,
       isLoaded: false,
     });
-    setOnlineUsers({ isLoaded: false, arr: [] });
-    setAfkUsers({ isLoaded: false, arr: [] });
-    setOfflineUsers({ isLoaded: false, arr: [] });
+    onlineUsers.arr = []; afkUsers.arr = []; offlineUsers.arr = [];
+    setOnlineUsers({ ...onlineUsers, isLoaded: false });
+    setAfkUsers({ ...afkUsers, isLoaded: false });
+    setOfflineUsers({ ...offlineUsers, isLoaded: false });
 
     const session = JSON.parse(localStorage.getItem("session_data"));
 
@@ -255,6 +267,63 @@ export default function Dashboard() {
           severity={"danger"}
           label="Оффлайн"
         />
+      </div>
+      <div className="p-2 surface-card mt-2 border-round-xl">
+      {!onlineUsers.isLoaded && <div className="grid">
+        <div className="col">
+          <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи</span>
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+        </div>
+        <div className="col">
+        <span className="text-xl font-bold w-12 flex justify-content-center mb-2">AFK пользователи</span>
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+        </div>
+        <div className="col">
+          <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Оффлайн пользователи</span>
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+          <Skeleton className="my-1" height="50px" width="100%" />
+        </div>
+      </div>}
+      {onlineUsers.isLoaded && <div className="grid">
+        <div className="col">
+          <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи ({onlineUsers.arr.length})</span>
+          {!onlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все уснули :(</span>}
+          <div className="overflow-y-auto h-screen">
+            {onlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+          </div>
+        </div>
+        <div className="col">
+          <span className="text-xl font-bold w-12 flex justify-content-center mb-2">AFK пользователи ({afkUsers.arr.length})</span>
+          {!afkUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Нет АФКшеров ╰(*°▽°*)╯</span>}
+          <div className="overflow-y-auto h-screen">
+            {afkUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+          </div>
+        </div>
+        <div className="col">
+          <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Оффлайн пользователи ({offlineUsers.arr.length})</span>
+          {!offlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все онлайн O_O</span>}
+          <div className="overflow-y-auto h-screen">
+            {offlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+          </div>
+        </div>
+      </div>}
       </div>
     </>
   );

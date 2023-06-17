@@ -1,5 +1,6 @@
 module.exports = {
   packagerConfig: {
+    icon: './assets/icon',
     asar: true,
     prune: true
   },
