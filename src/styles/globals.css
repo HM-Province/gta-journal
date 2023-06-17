@@ -1,0 +1,16 @@
+@import "../fonts/stylesheet.css";
+
+* {
+  font-family: "Google Sans", sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--surface-ground);
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
