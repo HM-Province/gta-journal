@@ -16,6 +16,9 @@ module.exports = {
         setupExe: "Setup.exe",
       },
     },
+    {
+      name: '@electron-forge/maker-zip'
+    }
   ],
   plugins: [
     {
