@@ -14,6 +14,7 @@ import Top from "./views/Top.jsx";
 import Stats from "./views/Stats.jsx";
 import { Provider } from "react-redux";
 import store from "./store/index.js";
+import Settings from "./views/Settings.jsx";
 
 const router = createHashRouter([
   {
@@ -36,6 +37,10 @@ const router = createHashRouter([
         path: "/stats",
         element: <Stats />,
       },
+      {
+        path: '/settings',
+        element: <Settings />
+      }
     ],
   },
   {
