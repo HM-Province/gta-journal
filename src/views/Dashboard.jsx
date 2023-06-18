@@ -4,7 +4,6 @@ import { Skeleton } from "primereact/skeleton";
 import { Button } from "primereact/button";
 import Icon from "@mdi/react";
 import { mdiBriefcase, mdiGhost, mdiLogout, mdiSleep, mdiSync } from "@mdi/js";
-import styles from "../styles/modules/Dashboard.module.css";
 import { cities } from "../constants/cities";
 
 const activityStatuses = [
@@ -29,12 +28,12 @@ const activityStatuses = [
 ];
 
 function UserCard(props) {
-  const cityColor = cities.find((city) => props.tag.includes(city.tag))?.color || "--text-color";
+  const cityColor = cities.find((city) => props.tag.includes(city.tag))?.color || "--orange-400";
 
   return <div className="relative px-3 py-2 flex align-items-center surface-ground my-2 border-round-xl shadow-3 hover:surface-hover">
     <img className="border-circle mr-2 overflow-hidden" src={props.avatar} alt="" />
     <span className="flex align-items-center z-2 font-bold">{props.username}</span>
-    <span className="z-1 absolute text-sm font-bold select-none mr-2" style={{top: '1px', right: '1px', opacity: 0.7, color: `var(${cityColor})`}}>{props.tag}</span>
+    <span className="z-1 absolute text-sm font-bold select-none" style={{top: '1px', right: '12px', opacity: 0.7, color: `var(${cityColor})`}}>{props.tag}</span>
   </div>
 }
 
@@ -56,6 +55,7 @@ export default function Dashboard() {
     isLoaded: false,
     arr: [],
   });
+  const [stats, setStats] = React.useState({ isLoaded: false, okbm: 0, cgbp: 0, cgbn: 0 });
 
   const addUser = (i, user) => {
     if (i == 0) onlineUsers.arr.push(user);
@@ -72,6 +72,8 @@ export default function Dashboard() {
     setOnlineUsers({ ...onlineUsers, isLoaded: false });
     setAfkUsers({ ...afkUsers, isLoaded: false });
     setOfflineUsers({ ...offlineUsers, isLoaded: false });
+    stats.isLoaded = false; stats.okbm = 0; stats.cgbn = 0; stats.cgbp = 0;
+    setStats(stats);
 
     const session = JSON.parse(localStorage.getItem("session_data"));
 
@@ -137,10 +139,18 @@ export default function Dashboard() {
             .getAttribute("src")}`,
         };
 
+        if (user.tag.includes('ОКБ-М')) stats.okbm++;
+        else if (user.tag.includes('ЦГБ-П')) stats.cgbp++;
+        else if (user.tag.includes('ЦГБ-Н')) stats.cgbn++;
+
         addUser(i, user);
       }
     }
 
+    stats.isLoaded = true;
+    stats.okbm--; stats.cgbp--; stats.cgbn--;
+
+    setStats(stats);
     setCurrentUser({ ...currentUser, isLoaded: true });
     setOnlineUsers({ ...onlineUsers, isLoaded: true });
     setAfkUsers({ ...afkUsers, isLoaded: true });
@@ -268,7 +278,17 @@ export default function Dashboard() {
           label="Оффлайн"
         />
       </div>
-      <div className="p-2 surface-card mt-2 border-round-xl">
+      {!stats.isLoaded && <div className="p-4 mt-2 surface-card border-round-xl flex gap-2 w-12">
+        <Skeleton height="36px" className="w-4 border-round-md" />
+        <Skeleton height="36px" className="w-4 border-round-md" />
+        <Skeleton height="36px" className="w-4 border-round-md" />
+      </div>}
+      {stats.isLoaded && <div className="p-4 mt-2 surface-card border-round-xl flex gap-2 w-12">
+        <span className="w-4 border-round-md text-0 font-bold text-md py-2 bg-blue-400 flex align-items-center justify-content-center">ОКБ: {stats.okbm}</span>
+        <span className="w-4 border-round-md text-0 font-bold text-md py-2 bg-red-400 flex align-items-center justify-content-center">ЦГБ-П: {stats.cgbp}</span>
+        <span className="w-4 border-round-md text-0 font-bold text-md py-2 bg-green-400 flex align-items-center justify-content-center">ЦГБ-Н: {stats.cgbn}</span>
+      </div>}
+      <div className="px-2 py-4 surface-card mt-2 border-round-xl">
       {!onlineUsers.isLoaded && <div className="grid">
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи</span>
@@ -305,21 +325,21 @@ export default function Dashboard() {
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи ({onlineUsers.arr.length})</span>
           {!onlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все уснули :(</span>}
-          <div className="overflow-y-auto h-screen">
+          <div className="overflow-y-auto max-h-screen">
             {onlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">AFK пользователи ({afkUsers.arr.length})</span>
           {!afkUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Нет АФКшеров ╰(*°▽°*)╯</span>}
-          <div className="overflow-y-auto h-screen">
+          <div className="overflow-y-auto max-h-screen">
             {afkUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Оффлайн пользователи ({offlineUsers.arr.length})</span>
           {!offlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все онлайн O_O</span>}
-          <div className="overflow-y-auto h-screen">
+          <div className="overflow-y-auto max-h-screen">
             {offlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>

@@ -16,9 +16,9 @@ require("update-electron-app")({
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 650,
+    width: 700,
     height: 400,
-    minWidth: 650,
+    minWidth: 700,
     minHeight: 400,
     frame: false,
     titleBarStyle: "hidden",
