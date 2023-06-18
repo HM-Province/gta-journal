@@ -3,6 +3,7 @@ const axios = require("axios");
 const path = require("node:path");
 const fs = require("node:fs");
 const createDesktopShortcut = require('create-desktop-shortcuts');
+const processlist = require('node-processlist');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -38,10 +39,10 @@ if (fs.existsSync(path.join(localPath, "gta-journal.exe"))) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 700,
-    height: 400,
-    minWidth: 700,
-    minHeight: 400,
+    width: 970,
+    height: 550,
+    minWidth: 970,
+    minHeight: 550,
     frame: false,
     titleBarStyle: "hidden",
     webPreferences: {
@@ -52,11 +53,12 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-
   return mainWindow;
 };
+
+async function getProcessesByName(_, name) {
+  return await processlist.getProcessesByName(name);
+}
 
 async function handleAsyncGetRequest(_, url, options) {
   const response = await axios.get(url, options);
@@ -84,6 +86,7 @@ async function handleAsyncPostRequest(_, url, data, options) {
 app.on("ready", () => {
   const window = createWindow();
 
+  ipcMain.handle("processes:get", getProcessesByName)
   ipcMain.handle("requests:get", handleAsyncGetRequest)
   ipcMain.handle("requests:post", handleAsyncPostRequest)
 

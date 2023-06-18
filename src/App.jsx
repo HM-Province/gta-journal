@@ -1,5 +1,5 @@
-import * as React from "react";
-import { createRoot } from 'react-dom/client';
+import React from "react";
+import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import "./styles/globals.css";
 import "primeflex/primeflex.css";
@@ -12,6 +12,8 @@ import Dashboard from "./views/Dashboard.jsx";
 import Logout from "./views/Logout.jsx";
 import Top from "./views/Top.jsx";
 import Stats from "./views/Stats.jsx";
+import { Provider } from "react-redux";
+import store from "./store/index.js";
 
 const router = createHashRouter([
   {
@@ -28,31 +30,33 @@ const router = createHashRouter([
       },
       {
         path: "/top",
-        element: <Top />
+        element: <Top />,
       },
       {
         path: "/stats",
-        element: <Stats />
-      }
-    ]
+        element: <Stats />,
+      },
+    ],
   },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
     path: "/logout",
-    element: <Logout />
-  }
+    element: <Logout />,
+  },
 ]);
 
 const root = createRoot(document.getElementById("app"));
 
 root.render(
   <React.StrictMode>
-    <WindowTopbar />
-    <main className="flex" style={{paddingTop: '33px'}}>
-      <RouterProvider router={router} />
-    </main>
+    <Provider store={store}>
+      <WindowTopbar />
+      <main className="flex" style={{ paddingTop: "33px" }}>
+        <RouterProvider router={router} />
+      </main>
+    </Provider>
   </React.StrictMode>
 );

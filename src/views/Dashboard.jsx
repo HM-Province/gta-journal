@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "primereact/skeleton";
 import { Button } from "primereact/button";
 import Icon from "@mdi/react";
 import { mdiBriefcase, mdiGhost, mdiLogout, mdiSleep, mdiSync } from "@mdi/js";
 import { cities } from "../constants/cities";
+
+import alertSound from "../assets/audio/alert.ogg";
+import { useDispatch, useSelector } from "react-redux";
+import { resetState, setUser, toggleLoading } from "../store/user.slice";
+import { changeState } from "../store/mta.slice";
 
 const activityStatuses = [
   {
@@ -39,17 +44,15 @@ function UserCard(props) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = React.useState({
-    isLoaded: false,
-    status: activityStatuses[0],
-    username: "",
-    avatar: "",
-    tag: "",
-  });
+
+  const currentUser = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
   const [onlineUsers, setOnlineUsers] = React.useState({
     isLoaded: false,
     arr: [],
   });
+  const [isMtaRunning, setIsMtaRunning] = React.useState(true);
   const [afkUsers, setAfkUsers] = React.useState({ isLoaded: false, arr: [] });
   const [offlineUsers, setOfflineUsers] = React.useState({
     isLoaded: false,
@@ -57,17 +60,28 @@ export default function Dashboard() {
   });
   const [stats, setStats] = React.useState({ isLoaded: false, okbm: 0, cgbp: 0, cgbn: 0 });
 
+  const alert = new Audio(alertSound);
+
   const addUser = (i, user) => {
     if (i == 0) onlineUsers.arr.push(user);
     else if (i == 1) afkUsers.arr.push(user);
     else offlineUsers.arr.push(user);
   };
 
+  const checkMTA = async () => {
+    const processes = await window.electronAPI.getProcessesByName("Multi Theft Auto.exe");
+
+    if (!processes.length) {
+      setIsMtaRunning(false);
+      return false;
+    } else {
+      setIsMtaRunning(true);
+      return true;
+    }
+  };
+
   const loadUser = async () => {
-    setCurrentUser({
-      ...currentUser,
-      isLoaded: false,
-    });
+    dispatch(resetState());
     onlineUsers.arr = []; afkUsers.arr = []; offlineUsers.arr = [];
     setOnlineUsers({ ...onlineUsers, isLoaded: false });
     setAfkUsers({ ...afkUsers, isLoaded: false });
@@ -100,16 +114,18 @@ export default function Dashboard() {
       actionStatusDiv.querySelector(".active").classList.values()
     )[1];
     const currentUserElement = parsedDocument.querySelector("p.username");
-    currentUser.username = currentUserElement.innerText.substring(
+
+    let newCurrentUserInfo = { ...currentUser };
+    newCurrentUserInfo.username = currentUserElement.innerText.substring(
       currentUserElement.innerText.match(/\[.+\] /g)[0].length
     );
-    currentUser.status = activityStatuses.find(
+    newCurrentUserInfo.status = activityStatuses.find(
       (status) => status.value === currentActivity
     );
-    currentUser.tag = currentUserElement.innerText
+    newCurrentUserInfo.tag = currentUserElement.innerText
       .match(/\[.+\]/g)[0]
       .replace(/\[|\]/g, "");
-    currentUser.avatar = `https://gta-journal.ru${parsedDocument
+    newCurrentUserInfo.avatar = `https://gta-journal.ru${parsedDocument
       .querySelector("div.avatar")
       .getElementsByTagName("img")[0]
       .getAttribute("src")}`;
@@ -151,14 +167,31 @@ export default function Dashboard() {
     stats.okbm--; stats.cgbp--; stats.cgbn--;
 
     setStats(stats);
-    setCurrentUser({ ...currentUser, isLoaded: true });
+    dispatch(setUser(newCurrentUserInfo));
     setOnlineUsers({ ...onlineUsers, isLoaded: true });
     setAfkUsers({ ...afkUsers, isLoaded: true });
     setOfflineUsers({ ...offlineUsers, isLoaded: true });
   };
 
-  const changeStatus = async (code) => {
-    setCurrentUser({ ...currentUser, isLoaded: false });
+  useEffect(() => {
+    if (currentUser.status.id !== 0) {
+      alert.play();
+      new window.Notification("Вы оффлайн", { body: "Процесс МТА завершён." });
+      changeStatus(0);
+    }
+  }, [isMtaRunning]);
+
+  async function changeStatus(code) {
+    dispatch(toggleLoading());
+    const isRunning = await checkMTA();
+    if (!isRunning && code != 0) {
+      dispatch(toggleLoading());
+      alert.play();
+      new window.Notification("ЖА недоступен", { body: "Запустите МТА." });
+      return;
+    }
+
+    dispatch(resetState());
     setOnlineUsers({ ...onlineUsers, isLoaded: false });
     setAfkUsers({ ...afkUsers, isLoaded: false });
     setOfflineUsers({ ...offlineUsers, isLoaded: false });
@@ -185,7 +218,12 @@ export default function Dashboard() {
   };
 
   React.useEffect(() => {
-    loadUser();
+    loadUser().finally(() => {
+      checkMTA();
+      setInterval(() => {
+        checkMTA();
+      }, 10_000);
+    })
   }, []);
 
   return (
