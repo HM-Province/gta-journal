@@ -1,23 +1,54 @@
 {
   "name": "gta-journal",
-  "main": "./src/main.js",
-  "version": "0.0.1-rc.2",
-  "packageManager": "yarn@3.6.0",
-  "dependencies": {
-    "axios": "^1.4.0",
-    "electron-squirrel-startup": "^1.0.0",
-    "update-electron-app": "^2.0.1"
-  },
+  "productName": "GTA Journal",
+  "version": "1.0.0-rc.2",
+  "description": "Оболочка Журнала Активности для МЗ сервера №1 MTA Province",
+  "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "make": "electron-forge make"
+    "lint": "echo \"No linting configured\""
   },
+  "keywords": [],
+  "author": {
+    "name": "Gizuzu",
+    "email": "admin@gachi.su"
+  },
+  "license": "MIT",
   "devDependencies": {
-    "@electron-forge/cli": "^6.1.1",
-    "@electron-forge/maker-squirrel": "^6.1.1",
-    "@electron-forge/publisher-github": "^6.1.1",
-    "electron": "^25.1.1"
+    "@babel/core": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "@electron-forge/cli": "^6.2.1",
+    "@electron-forge/maker-deb": "^6.2.1",
+    "@electron-forge/maker-rpm": "^6.2.1",
+    "@electron-forge/maker-squirrel": "^6.2.1",
+    "@electron-forge/maker-zip": "^6.2.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
+    "@electron-forge/plugin-webpack": "^6.2.1",
+    "@electron-forge/publisher-github": "^6.2.1",
+    "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.0.0",
+    "electron": "25.1.1",
+    "node-loader": "^2.0.0",
+    "style-loader": "^3.0.0"
+  },
+  "dependencies": {
+    "@mdi/js": "^7.2.96",
+    "@mdi/react": "^1.6.1",
+    "axios": "^1.4.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "primeflex": "^3.3.1",
+    "primeicons": "^6.0.1",
+    "primereact": "^9.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.13.0",
+    "sort-by": "^0.0.2",
+    "update-electron-app": "^2.0.1"
   }
 }

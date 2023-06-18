@@ -1,6 +1,11 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("node:path");
 const axios = require("axios");
+const fs = require("node:fs");
+
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
 
 // Auto Updater
 require("update-electron-app")({
@@ -8,25 +13,28 @@ require("update-electron-app")({
   updateInterval: "1 hour",
 });
 
-if (require("electron-squirrel-startup")) app.quit();
-
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 650,
+const createWindow = () => {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 700,
     height: 400,
-    minWidth: 650,
+    minWidth: 700,
     minHeight: 400,
     frame: false,
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
 
-  win.loadFile(path.join(__dirname, "./views/main/index.html"));
+  // and load the index.html of the app.
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  return win;
-}
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
+
+  return mainWindow;
+};
 
 async function handleAsyncGetRequest(_, url, options) {
   const response = await axios.get(url, options);
@@ -34,8 +42,8 @@ async function handleAsyncGetRequest(_, url, options) {
     status: response.status,
     statusText: response.statusText,
     data: response.data,
-    headers: response.headers
-  }
+    headers: response.headers,
+  };
 }
 
 async function handleAsyncPostRequest(_, url, data, options) {
@@ -44,11 +52,14 @@ async function handleAsyncPostRequest(_, url, data, options) {
     status: response.status,
     statusText: response.statusText,
     data: response.data,
-    headers: response.headers
-  }
+    headers: response.headers,
+  };
 }
 
-app.whenReady().then(() => {
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on("ready", () => {
   const window = createWindow();
 
   ipcMain.handle("requests:get", handleAsyncGetRequest)
@@ -56,16 +67,24 @@ app.whenReady().then(() => {
 
   ipcMain.on("hide-window", () => window.minimize());
   ipcMain.on("close-window", () => app.quit());
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
 });
 
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
+
+app.on("activate", () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and import them here.
