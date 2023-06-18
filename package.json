@@ -1,7 +1,7 @@
 {
   "name": "gta-journal",
   "productName": "GTA Journal",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "Оболочка Журнала Активности для МЗ сервера №1 MTA Province",
   "main": ".webpack/main",
   "scripts": {
@@ -39,6 +39,7 @@
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
     "axios": "^1.4.0",
+    "create-desktop-shortcuts": "^1.10.1",
     "electron-squirrel-startup": "^1.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
