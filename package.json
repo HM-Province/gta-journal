@@ -1,7 +1,7 @@
 {
   "name": "gta-journal",
   "productName": "GTA Journal",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "description": "Оболочка Журнала Активности для МЗ сервера №1 MTA Province",
   "main": ".webpack/main",
   "scripts": {
@@ -30,22 +30,26 @@
     "babel-loader": "^9.1.2",
     "css-loader": "^6.0.0",
     "electron": "25.1.1",
+    "file-loader": "^6.2.0",
     "node-loader": "^2.0.0",
     "style-loader": "^3.0.0"
   },
   "dependencies": {
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
     "create-desktop-shortcuts": "^1.10.1",
     "electron-squirrel-startup": "^1.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
+    "node-processlist": "^1.0.2",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primereact": "^9.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.1.0",
     "react-router-dom": "^6.13.0",
     "sort-by": "^0.0.2",
     "update-electron-app": "^2.0.1"

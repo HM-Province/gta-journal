@@ -9,6 +9,7 @@ import {
   mdiCog,
   mdiLogout,
 } from "@mdi/js";
+import clickSound from "../assets/audio/click.mp3";
 
 function SidebarLink(props) {
   return (
@@ -39,12 +40,19 @@ export default function Root() {
   const naviagate = useNavigate();
   const location = useLocation();
 
+  const audio = new Audio(clickSound);
+  audio.volume = 0.1;
+
   useEffect(() => {
     const sessionInfo = localStorage.getItem("session_data")
       ? JSON.parse(localStorage.getItem("session_data"))
       : null;
     if (!sessionInfo || Date.now() >= sessionInfo?.expires)
       return naviagate("/login");
+
+    document.addEventListener("click", () => {
+      audio.play();
+    });
   }, []);
 
   return (
