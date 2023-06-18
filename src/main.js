@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const axios = require("axios");
+const path = require("node:path");
 const fs = require("node:fs");
+const createDesktopShortcut = require('create-desktop-shortcuts');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -12,6 +14,26 @@ require("update-electron-app")({
   repo: "HM-Province/gta-journal",
   updateInterval: "1 hour",
 });
+
+// Change shortcut
+const localPath = path.join(process.env.APPDATA, "../Local/GTAJournal");
+if (fs.existsSync(path.join(localPath, "gta-journal.exe"))) {
+  try {
+    createDesktopShortcut({
+      windows: {
+        filePath: path.join(localPath, "GTA Journal.exe")
+      }
+    });
+
+    const homeDir = require('os').homedir();
+    const desktopDir = path.join(homeDir, './Desktop');
+    if (fs.existsSync(path.join(desktopDir, "gta-journal.lnk")))
+      fs.rmSync(path.join(desktopDir, "gta-journal.lnk"));
+    fs.rmSync(path.join(localPath, "gta-journal.exe"))
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 const createWindow = () => {
   // Create the browser window.
