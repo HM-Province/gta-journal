@@ -129,7 +129,7 @@ export default function Stats() {
               {table.rows.map((row) => (
                 <tr>
                   {row.map(column => <td style={{minWidth: '130px'}} className={`relative pt-4 pb-2 px-2`}>
-                    {column.day && <span style={{ width: '30px', height: '30px', backdropFilter: 'blur(40px)' }} className="absolute text-sm flex align-items-center justify-content-center top-0 right-0 border-circle p-2 font-bold surface-hover">{column.day}</span>}
+                    {column.day && <span style={{ width: '30px', height: '30px' }} className="absolute text-sm flex align-items-center justify-content-center top-0 right-0 border-circle p-2 font-bold surface-hover">{column.day}</span>}
                     {column.time && <span className={`w-12 flex align-items-center justify-content-center flex-nowrap text-0 font-bold py-2 px-3 ${column.status ? `bg-${column.status === 'error' ? 'red' : column.status === 'success' ? 'green' : 'indigo'}-400 border-round-md` : ''}`}>{column.time}</span>}
                   </td>)}
                 </tr>

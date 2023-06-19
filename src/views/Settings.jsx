@@ -27,6 +27,13 @@ export default function Settings() {
         </div>
       </div>
       <div className="p-4 surface-card border-round-xl flex flex-column w-12 mt-2 shadow-3">
+        <h2 className="mt-0 mb-4">Графика</h2>
+        <div className="flex align-items-center">
+          <InputSwitch disabled className="mr-2" />
+          <span className="font-bold text-md">Размытие некоторых элементов</span>
+        </div>
+      </div>
+      <div className="p-4 surface-card border-round-xl flex flex-column w-12 mt-2 shadow-3">
         <h2 className="mt-0 mb-4">Звук</h2>
         <div className="flex align-items-center">
           <InputSwitch disabled checked className="mr-2" />
