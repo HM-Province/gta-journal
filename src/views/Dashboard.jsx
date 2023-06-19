@@ -5,11 +5,9 @@ import { Button } from "primereact/button";
 import Icon from "@mdi/react";
 import { mdiBriefcase, mdiGhost, mdiLogout, mdiSleep, mdiSync } from "@mdi/js";
 import { cities } from "../constants/cities";
-
 import alertSound from "../assets/audio/alert.ogg";
 import { useDispatch, useSelector } from "react-redux";
 import { resetState, setUser, toggleLoading } from "../store/user.slice";
-import { changeState } from "../store/mta.slice";
 
 const activityStatuses = [
   {
@@ -37,7 +35,7 @@ function UserCard(props) {
 
   return <div className="relative px-3 py-2 flex align-items-center surface-ground my-2 border-round-xl shadow-3 hover:surface-hover">
     <img className="border-circle mr-2 overflow-hidden" src={props.avatar} alt="" />
-    <span className="flex align-items-center z-2 font-bold">{props.username}</span>
+    <span className="flex align-items-center z-2 font-bold select-all">{props.username}</span>
     <span className="z-1 absolute text-sm font-bold select-none" style={{top: '1px', right: '12px', opacity: 0.7, color: `var(${cityColor})`}}>{props.tag}</span>
   </div>
 }
@@ -50,8 +48,9 @@ export default function Dashboard() {
 
   const [onlineUsers, setOnlineUsers] = React.useState({
     isLoaded: false,
-    arr: [],
+    arr: []
   });
+  const [lastUpdate, setLastUpdate] = React.useState(null);
   const [isMtaRunning, setIsMtaRunning] = React.useState(true);
   const [afkUsers, setAfkUsers] = React.useState({ isLoaded: false, arr: [] });
   const [offlineUsers, setOfflineUsers] = React.useState({
@@ -167,6 +166,7 @@ export default function Dashboard() {
     stats.okbm--; stats.cgbp--; stats.cgbn--;
 
     setStats(stats);
+    setLastUpdate(new Date());
     dispatch(setUser(newCurrentUserInfo));
     setOnlineUsers({ ...onlineUsers, isLoaded: true });
     setAfkUsers({ ...afkUsers, isLoaded: true });
@@ -326,7 +326,8 @@ export default function Dashboard() {
         <span className="w-4 border-round-md text-0 font-bold text-md py-2 bg-red-400 flex align-items-center justify-content-center">ЦГБ-П: {stats.cgbp}</span>
         <span className="w-4 border-round-md text-0 font-bold text-md py-2 bg-green-400 flex align-items-center justify-content-center">ЦГБ-Н: {stats.cgbn}</span>
       </div>}
-      <div className="px-2 py-4 surface-card mt-2 border-round-xl">
+      <div className="px-2 py-4 relative surface-card mt-2 border-round-xl">
+        <span style={{ bottom: '5px', right: '10px', opacity: '0.7' }} className="absolute select-none">Последнее обновление: {lastUpdate ? `${lastUpdate.toLocaleString('ru', { timeZone: 'Europe/Moscow' })} по МСК` : 'Никогда'}</span>
       {!onlineUsers.isLoaded && <div className="grid">
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи</span>
@@ -363,21 +364,21 @@ export default function Dashboard() {
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи ({onlineUsers.arr.length})</span>
           {!onlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все уснули :(</span>}
-          <div className="overflow-y-auto max-h-screen">
+          <div className="overflow-y-auto max-h-30rem">
             {onlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">AFK пользователи ({afkUsers.arr.length})</span>
           {!afkUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Нет АФКшеров ╰(*°▽°*)╯</span>}
-          <div className="overflow-y-auto max-h-screen">
+          <div className="overflow-y-auto max-h-30rem">
             {afkUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Оффлайн пользователи ({offlineUsers.arr.length})</span>
           {!offlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все онлайн O_O</span>}
-          <div className="overflow-y-auto max-h-screen">
+          <div className="overflow-y-auto max-h-30rem">
             {offlineUsers.arr.map((user) => <UserCard key={user.username} username={user.username} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
