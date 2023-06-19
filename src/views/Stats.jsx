@@ -38,10 +38,6 @@ export default function Stats() {
     const boxWidget = parsedDocument.querySelector("div.box-widget");
     if (!boxWidget) return navigate("/logout");
 
-    dayOnline.percentage = Number(
-      boxWidget.querySelector(".progress-bar").innerText.replace("%", "")
-    );
-
     const fuckingStupidInputs = boxWidget.querySelectorAll("input");
     let fuckedInput = null;
     for (const i in Array.from(fuckingStupidInputs.keys())) {
@@ -57,6 +53,7 @@ export default function Stats() {
     const hours = Math.floor(minutes / 60);
     if (minutes > 60) minutes = minutes - 60 * hours;
     dayOnline.time = { hours, minutes };
+    dayOnline.percentage = hours >= 2 ? 100 : Math.round(((hours*60+40)/120)*100);
     setDayOnline({ ...dayOnline, isLoaded: true });
 
     const tableElement = parsedDocument.querySelector("table.calendar");
@@ -82,8 +79,6 @@ export default function Stats() {
 
       table.rows.push(row);
     }
-
-    console.log(table.rows);
 
     setTable({ ...table, isLoaded: true });
   };

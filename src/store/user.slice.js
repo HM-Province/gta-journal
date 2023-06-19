@@ -45,11 +45,38 @@ export const userSlice = createSlice({
     },
     toggleLoading: (state) => {
       state.isLoaded = !state.isLoaded;
-    }
+    },
+    setStatus: async (state, action) => {
+      const session = JSON.parse(localStorage.getItem("session_data"));
+
+      await window.electronAPI.postRequest(
+        "https://gta-journal.ru/api.editstatus",
+        {
+          status: action.payload,
+        },
+        {
+          headers: {
+            "Accept-Language": "ru-RU,ru;q=0.9",
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+            Cookie: `id=${session.id}; usid=${session.usid}`,
+          },
+        }
+      );
+
+      state.status = {
+        id: 0,
+        value: "offline",
+        title: "Оффлайн",
+        color: "--red-200",
+      };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { resetState, setUser, toggleLoading } = userSlice.actions;
+export const { resetState, setUser, toggleLoading, setStatus } =
+  userSlice.actions;
 
 export default userSlice.reducer;
