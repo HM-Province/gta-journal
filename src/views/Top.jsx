@@ -82,7 +82,7 @@ export default function Top() {
         <div className="flex flex-column gap-2">
           {!top.isLoaded && Array.from(Array(10).keys()).map((i) => <Skeleton key={i} height="40px" className="w-12 border-round-md" />)}
           {top.isLoaded && Array.from(Array(10).keys()).map((i) => {
-            const cityColor = cities.find((city) => top.arr[i].tag.includes(city.tag))?.color || "--orange-400";
+            const cityColor = cities.find((city) => top.arr[i].tag.includes(city.tag))?.colorDark || "--orange-400";
 
             return <div key={i} style={{backgroundColor: `var(${cityColor})`}} className="p-2 border-round-md flex align-items-center justify-content-center shadow-2">
               <span class="font-bold text-0 w-1">{i+1}</span>

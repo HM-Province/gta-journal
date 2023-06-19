@@ -41,7 +41,7 @@ export default function Root() {
   const location = useLocation();
 
   const audio = new Audio(clickSound);
-  audio.volume = 0.1;
+  audio.volume = 0.05;
 
   useEffect(() => {
     const sessionInfo = localStorage.getItem("session_data")
@@ -59,7 +59,7 @@ export default function Root() {
     <>
       <nav
         style={{ height: "calc(100vh - 33px)" }}
-        className="surface-overlay py-2 pl-2 pr-3"
+        className="surface-overlay py-2 pl-2 pr-3 shadow-5"
       >
         <div className="flex flex-column">
           <SidebarLink
@@ -71,16 +71,22 @@ export default function Root() {
             icon={mdiViewDashboard}
           />
           <SidebarLink
+            active={location.pathname == "/top"}
+            to="/top"
+            label="Топ 10"
+            icon={mdiPoll}
+          />
+          <SidebarLink
             active={location.pathname == "/stats"}
             to="/stats"
             label="Статистика"
             icon={mdiCalendarClock}
           />
           <SidebarLink
-            active={location.pathname == "/top"}
-            to="/top"
-            label="Топ 10"
-            icon={mdiPoll}
+            active={location.pathname == "/settings"}
+            to="/settings"
+            label="Настройки"
+            icon={mdiCog}
           />
           <SidebarLink
             active={false}
