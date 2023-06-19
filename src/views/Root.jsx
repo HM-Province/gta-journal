@@ -10,6 +10,9 @@ import {
   mdiLogout,
 } from "@mdi/js";
 import clickSound from "../assets/audio/click.mp3";
+import alertSound from "../assets/audio/alert.ogg";
+import { useDispatch, useSelector } from "react-redux";
+import { setStatus } from "../store/user.slice";
 
 function SidebarLink(props) {
   return (
@@ -39,11 +42,44 @@ function SidebarLink(props) {
 export default function Root() {
   const naviagate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user);
 
   const audio = new Audio(clickSound);
+  const alert = new Audio(alertSound);
   audio.volume = 0.05;
 
+  const [ticks, setTicks] = React.useState(0);
+
+  const appTick = () => {
+    setTimeout(() => {
+      if (ticks != 0 && ticks % 10 === 0) checkMTA();
+      if (ticks >= 600) setTicks(0);
+      else setTicks(ticks + 1);
+    }, 1000);
+  };
+
   useEffect(() => {
+    appTick();
+  }, [ticks]);
+
+  const checkMTA = async () => {
+    const processes = await window.electronAPI.getProcessesByName(
+      "Multi Theft Auto.exe"
+    );
+
+    if (!processes.length) {
+      if (currentUser.status.id === 0) return;
+
+      dispatch(setStatus(0));
+      alert.play();
+      new window.Notification("Вы оффлайн", { body: "Процесс МТА завершён." });
+      window.location.reload();
+    }
+  };
+
+  useEffect(() => {
+    appTick();
     const sessionInfo = localStorage.getItem("session_data")
       ? JSON.parse(localStorage.getItem("session_data"))
       : null;

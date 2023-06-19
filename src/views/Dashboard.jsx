@@ -7,7 +7,7 @@ import { mdiBriefcase, mdiGhost, mdiLogout, mdiSleep, mdiSync } from "@mdi/js";
 import { cities } from "../constants/cities";
 import alertSound from "../assets/audio/alert.ogg";
 import { useDispatch, useSelector } from "react-redux";
-import { resetState, setUser, toggleLoading } from "../store/user.slice";
+import { resetState, setStatus, setUser, toggleLoading } from "../store/user.slice";
 
 const activityStatuses = [
   {
@@ -35,7 +35,9 @@ function UserCard(props) {
 
   return <div className="relative px-3 py-2 flex align-items-center surface-ground my-2 border-round-xl shadow-3 hover:surface-hover">
     <img className="border-circle mr-2 overflow-hidden" src={props.avatar} alt="" />
+    <div>
     <span className="flex align-items-center z-2 font-bold select-all">{props.username}</span>
+    </div>
     <span className="z-1 absolute text-sm font-bold select-none" style={{top: '1px', right: '12px', opacity: 0.7, color: `var(${cityColor})`}}>{props.tag}</span>
   </div>
 }
@@ -51,7 +53,6 @@ export default function Dashboard() {
     arr: []
   });
   const [lastUpdate, setLastUpdate] = React.useState(null);
-  const [isMtaRunning, setIsMtaRunning] = React.useState(true);
   const [afkUsers, setAfkUsers] = React.useState({ isLoaded: false, arr: [] });
   const [offlineUsers, setOfflineUsers] = React.useState({
     isLoaded: false,
@@ -70,13 +71,10 @@ export default function Dashboard() {
   const checkMTA = async () => {
     const processes = await window.electronAPI.getProcessesByName("Multi Theft Auto.exe");
 
-    if (!processes.length) {
-      setIsMtaRunning(false);
+    if (!processes.length) 
       return false;
-    } else {
-      setIsMtaRunning(true);
+    else 
       return true;
-    }
   };
 
   const loadUser = async () => {
@@ -128,6 +126,14 @@ export default function Dashboard() {
       .querySelector("div.avatar")
       .getElementsByTagName("img")[0]
       .getAttribute("src")}`;
+    dispatch(setUser(newCurrentUserInfo));
+    
+    const isMtaRunning = checkMTA();
+    if (!isMtaRunning && newCurrentUserInfo.status.id !== 0) {
+      dispatch(setStatus(0));
+      alert.play();
+      new window.Notification("ЖА отключен", { body: "Запустите МТА." });
+    }
 
     const userColumns = parsedDocument.querySelectorAll(".col-12.col-lg-4");
     for (const i in Array.from(userColumns.keys())) {
@@ -167,19 +173,10 @@ export default function Dashboard() {
 
     setStats(stats);
     setLastUpdate(new Date());
-    dispatch(setUser(newCurrentUserInfo));
     setOnlineUsers({ ...onlineUsers, isLoaded: true });
     setAfkUsers({ ...afkUsers, isLoaded: true });
     setOfflineUsers({ ...offlineUsers, isLoaded: true });
   };
-
-  useEffect(() => {
-    if (currentUser.status.id !== 0) {
-      alert.play();
-      new window.Notification("Вы оффлайн", { body: "Процесс МТА завершён." });
-      changeStatus(0);
-    }
-  }, [isMtaRunning]);
 
   async function changeStatus(code) {
     dispatch(toggleLoading());
@@ -218,12 +215,7 @@ export default function Dashboard() {
   };
 
   React.useEffect(() => {
-    loadUser().finally(() => {
-      checkMTA();
-      setInterval(() => {
-        checkMTA();
-      }, 10_000);
-    })
+    loadUser();
   }, []);
 
   return (
