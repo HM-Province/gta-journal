@@ -2,15 +2,32 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "primereact/progressbar";
 import { Skeleton } from "primereact/skeleton";
+import { Dropdown } from 'primereact/dropdown';
+
+const MONTHS = {
+  "01": "Январь",
+  "02": "Февраль",
+  "03": "Март",
+  "04": "Апрель",
+  "05": "Май",
+  "06": "Июнь",
+  "07": "Июль",
+  "08": "Август",
+  "09": "Сентябрь",
+  "10": "Октябрь",
+  "11": "Ноябрь",
+  "12": "Декабрь"
+}
 
 export default function Stats() {
-  const [table, setTable] = React.useState({ isLoaded: false, rows: [] });
+  const [table, setTable] = React.useState({ isLoaded: false, rows: [], months: [] });
   const [dayOnline, setDayOnline] = React.useState({
     isLoaded: false,
     date: "-",
     time: { hours: 0, minutes: 0 },
     percentage: 0,
   });
+  const [selectedMonth, setSelectedMonth] = React.useState(null);
   const navigate = useNavigate();
 
   const loadData = async () => {
@@ -20,7 +37,7 @@ export default function Stats() {
     const sessionData = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      "https://gta-journal.ru/statistics",
+      "https://gta-journal.ru/statistics"+(selectedMonth ? `?${new URLSearchParams({ date: selectedMonth }).toString()}` : ''),
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",
@@ -53,7 +70,7 @@ export default function Stats() {
     const hours = Math.floor(minutes / 60);
     if (minutes > 60) minutes = minutes - 60 * hours;
     dayOnline.time = { hours, minutes };
-    dayOnline.percentage = hours >= 2 ? 100 : Math.round(((hours*60+40)/120)*100);
+    dayOnline.percentage = hours >= 2 ? 100 : Math.round(((hours*60+minutes)/120)*100);
     setDayOnline({ ...dayOnline, isLoaded: true });
 
     const tableElement = parsedDocument.querySelector("table.calendar");
@@ -80,12 +97,26 @@ export default function Stats() {
       table.rows.push(row);
     }
 
+    table.months = [];
+    const monthOptions = parsedDocument.querySelector(".select-user").querySelectorAll("option");
+    for (const i in Array.from(monthOptions.keys())) {
+      const option = monthOptions[i];
+      if (!option.value) continue;
+
+      const month = option.value.split(",");
+
+      table.months.push({
+        title: `${MONTHS[month[0]]} ${month[1]} года`,
+        value: option.value
+      });
+    }
+
     setTable({ ...table, isLoaded: true });
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedMonth]);
 
   return (
     <>
@@ -104,7 +135,11 @@ export default function Stats() {
         </span>
       </div>
       <div className="p-4 surface-card border-round-xl shadow-3 mt-2 overflow-x-auto">
-        <h3>Онлайн за текущий месяц</h3>
+        <h3>Онлайн за {selectedMonth ? `${selectedMonth.replace(",", ".")}` : 'текущий месяц'}</h3>
+
+        <Dropdown value={selectedMonth} onChange={(e) => setSelectedMonth(e.value)} options={table.months} optionLabel="title" optionValue="value" 
+          showClear placeholder="Выберите месяц" className="w-16rem mb-3" />
+
         {!table.isLoaded && (
           <Skeleton height="400px" width="100%" borderRadius=".375rem" />
         )}
@@ -125,7 +160,7 @@ export default function Stats() {
                 <tr>
                   {row.map(column => <td style={{minWidth: '130px'}} className={`relative pt-4 pb-2 px-2`}>
                     {column.day && <span style={{ width: '30px', height: '30px' }} className="absolute text-sm flex align-items-center justify-content-center top-0 right-0 border-circle p-2 font-bold surface-hover">{column.day}</span>}
-                    {column.time && <span className={`w-12 flex align-items-center justify-content-center flex-nowrap text-0 font-bold py-2 px-3 ${column.status ? `bg-${column.status === 'error' ? 'red' : column.status === 'success' ? 'green' : 'indigo'}-400 border-round-md` : ''}`}>{column.time}</span>}
+                    {column.time && <span className={`w-12 flex align-items-center select-all justify-content-center flex-nowrap text-0 font-bold py-2 px-3 ${column.status ? `bg-${column.status === 'error' ? 'red' : column.status === 'success' ? 'green' : 'indigo'}-400 border-round-md` : ''}`}>{column.time}</span>}
                   </td>)}
                 </tr>
               ))}
