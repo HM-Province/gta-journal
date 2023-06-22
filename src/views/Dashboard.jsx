@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "primereact/skeleton";
 import { Button } from "primereact/button";
 import Icon from "@mdi/react";
-import { mdiAt, mdiBriefcase, mdiGhost, mdiLoading, mdiLogout, mdiPencil, mdiSearchWeb, mdiSleep, mdiSync, mdiTrashCan } from "@mdi/js";
+import { mdiAccessPoint, mdiAt, mdiBriefcase, mdiGhost, mdiLoading, mdiLogout, mdiPencil, mdiSearchWeb, mdiSleep, mdiSync, mdiTrashCan } from "@mdi/js";
 import { cities } from "../constants/cities";
 import alertSound from "../assets/audio/alert.ogg";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,13 +37,52 @@ function UserCard(props) {
   const cm = React.useRef(null);
   const cityColor = cities.find((city) => props.tag.includes(city.tag))?.color || "--orange-400";
 
-  const items = [
+  let items = [
     {
       label: "Скопировать упоминание",
       icon: <Icon size={1} className="mr-2" path={mdiAt} />,
       command: () => props.onMentionCopy()
     }
   ];
+
+  if (props.href.startsWith("/user"))
+    items.push(
+      { separator: true },
+      {
+        label: "Изменить статус",
+        icon: <Icon size={1} className="mr-2" path={mdiAccessPoint} />,
+        items: [
+          {
+            label: "Онлайн",
+            icon: <Icon size={1} className="mr-2" path={mdiBriefcase} />,
+            command: () => props.onStatusChange(2)
+          },
+          {
+            label: "АФК",
+            icon: <Icon size={1} className="mr-2" path={mdiSleep} />,
+            command: () => props.onStatusChange(3)
+          },
+          {
+            label: "Оффлайн",
+            icon: <Icon size={1} className="mr-2" path={mdiGhost} />,
+            command: () => props.onStatusChange(1)
+          }
+        ]
+      },
+      {
+        label: "Изменить пользователя",
+        icon: <Icon size={1} className="mr-2" path={mdiPencil} />,
+        command: () => props.onUserEdit(),
+        disabled: true
+      },
+      { separator: true },
+      {
+        label: "Удалить пользователя",
+        icon: <Icon size={1} className="mr-2" path={mdiTrashCan} />,
+        command: () => props.onUserDelete(),
+        disabled: true
+      }
+    );
 
   return <div onContextMenu={(e) => cm.current.show(e)} className="relative px-3 py-2 flex align-items-center surface-ground my-2 border-round-xl shadow-3 hover:surface-hover">
     <img className="border-circle mr-2 overflow-hidden" src={props.avatar} alt="" />
@@ -80,10 +119,40 @@ export default function Dashboard() {
 
   const alert = new Audio(alertSound);
 
+  // Context Menu functions
   const copyMention = (user) => {
     navigator.clipboard.writeText(`@id${new URL(user.avatar).pathname.split('/').at(-1).split('_')[0]} (${user.username})`);
     toast.current.show({ severity: 'info', summary: 'Скопировано', detail: 'Упоминание пользователя скопировано', life: 3000 });
   }
+
+  const changeUserStatus = async (status, user) => {
+    const session = JSON.parse(localStorage.getItem("session_data"));
+
+    const response = await window.electronAPI.postRequest(
+      "https://gta-journal.ru/api.user",
+      {
+        id: Number(user.href.match(/id=[0-9]+/g)[0].substring(3)),
+        status: status
+      },
+      {
+        headers: {
+          "Accept-Language": "ru-RU,ru;q=0.9",
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+          Cookie: `id=${session.id}; usid=${session.usid}`,
+        },
+      }
+    );
+
+    if (response.data.res == 3 || response.data.res == 0)
+      toast.current.show({ severity: 'success', summary: "Статус изменён", detail: `Пользователь ${user.username}`, life: 3000 });
+    else
+      toast.current.show({ severity: 'error', summary: "Не удалось изменить статус", detail: `Пользователь ${user.username}`, life: 3000 });
+  }
+  const editUser = (user) => {}
+  const deleteUser = (user) => {}
+  // end
 
   const addUser = (i, user) => {
     if (i == 0) onlineUsers.arr.push(user);
@@ -410,21 +479,21 @@ export default function Dashboard() {
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Онлайн пользователи ({onlineUsers.arr.length})</span>
           {!onlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все уснули :(</span>}
           <div className="overflow-y-auto max-h-30rem">
-            {onlineUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+            {onlineUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} onStatusChange={(id) => changeUserStatus(id, user)} onUserEdit={() => editUser(user)} onUserDelete={() => deleteUser(user)} username={user.username} href={user.href} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">AFK пользователи ({afkUsers.arr.length})</span>
           {!afkUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Нет АФКшеров ╰(*°▽°*)╯</span>}
           <div className="overflow-y-auto max-h-30rem">
-            {afkUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+            {afkUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} onStatusChange={(id) => changeUserStatus(id, user)} onUserEdit={() => editUser(user)} onUserDelete={() => deleteUser(user)} username={user.username} href={user.href} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
         <div className="col">
           <span className="text-xl font-bold w-12 flex justify-content-center mb-2">Оффлайн пользователи ({offlineUsers.arr.length})</span>
           {!offlineUsers.arr.length && <span className="text-xl font-bold w-12 flex justify-content-center">Все онлайн O_O</span>}
           <div className="overflow-y-auto max-h-30rem">
-            {offlineUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} username={user.username} tag={user.tag} avatar={user.avatar} />)}
+            {offlineUsers.filtered.map((user) => <UserCard key={user.username} onMentionCopy={() => copyMention(user)} onStatusChange={(id) => changeUserStatus(id, user)} onUserEdit={() => editUser(user)} onUserDelete={() => deleteUser(user)} username={user.username} href={user.href} tag={user.tag} avatar={user.avatar} />)}
           </div>
         </div>
       </div>}
