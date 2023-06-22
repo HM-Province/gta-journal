@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "primereact/skeleton";
 import { Button } from "primereact/button";
@@ -72,8 +72,7 @@ function UserCard(props) {
       {
         label: "Изменить пользователя",
         icon: <Icon size={1} className="mr-2" path={mdiPencil} />,
-        command: () => props.onUserEdit(),
-        disabled: true
+        command: () => props.onUserEdit()
       },
       { separator: true },
       {
@@ -150,7 +149,9 @@ export default function Dashboard() {
     else
       toast.current.show({ severity: 'error', summary: "Не удалось изменить статус", detail: `Пользователь ${user.username}`, life: 3000 });
   }
-  const editUser = (user) => {}
+  const editUser = (user) => {
+    navigate(`/users/edit?id=${user.href.match(/id=[0-9]+/g)[0].substring(3)}`);
+  }
   const deleteUser = (user) => {}
   // end
 
@@ -205,6 +206,7 @@ export default function Dashboard() {
     const currentUserElement = parsedDocument.querySelector("p.username");
 
     let newCurrentUserInfo = { ...currentUser };
+    newCurrentUserInfo.isAdmin = parsedDocument.querySelector(".profile").innerHTML.includes("/user/add");
     newCurrentUserInfo.username = currentUserElement.innerText.substring(
       currentUserElement.innerText.match(/\[.+\] /g)[0].length
     );

@@ -15,6 +15,11 @@ import Stats from "./views/Stats.jsx";
 import { Provider } from "react-redux";
 import store from "./store/index.js";
 import Settings from "./views/Settings.jsx";
+import AddUser from "./views/users/Add.jsx";
+import PrimeReact from 'primereact/api';
+import EditUser from "./views/users/Edit.jsx";
+
+PrimeReact.ripple = true;
 
 const router = createHashRouter([
   {
@@ -40,6 +45,14 @@ const router = createHashRouter([
       {
         path: '/settings',
         element: <Settings />
+      },
+      {
+        path: "/users/add",
+        element: <AddUser />
+      },
+      {
+        path: "/users/edit",
+        element: <EditUser />
       }
     ],
   },
