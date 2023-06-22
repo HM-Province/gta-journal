@@ -3,6 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import Icon from "@mdi/react";
 import { mdiAccountMultiplePlus, mdiAccountPlus, mdiContentSave } from "@mdi/js";
+import { InputSwitch } from 'primereact/inputswitch';
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { Checkbox } from 'primereact/checkbox';
@@ -138,14 +139,28 @@ export default function EditUser() {
           disabled={!user.isLoaded}
         />
       </div>
-      <div className="flex align-items-center w-12 mt-2">
+      <div className="flex w-12 mt-3">
+        <InputSwitch />
+        <div className="flex flex-column w-10 ml-2">
+          <span className="font-bold text-md mb-0">Администратор</span>
+          <p className="text-color-secondary mt-1">Может управлять пользователями. Выдавайте с осторожностью!</p>
+        </div>
+      </div>
+      <div className="flex w-12 mt-1">
+        <InputSwitch />
+        <div className="flex flex-column w-10 ml-2">
+          <span className="font-bold text-md mb-0">Обновить аватар</span>
+          <p className="text-color-secondary mt-1">Если пользователь обновил аватар в ВК.</p>
+        </div>
+      </div>
+      {/* <div className="flex align-items-center w-12 mt-2">
         <Checkbox id="is-admin" checked={user.info.isAdmin} onChange={(e) => setUser({ ...user, info: { ...user.info, isAdmin: e.checked } })} />
         <label htmlFor="is-admin" className="font-bold ml-2">Администратор</label>
       </div>
       <div className="flex align-items-center w-12 mt-2">
         <Checkbox id="vk" checked={user.info.updateAvatar} onChange={(e) => setUser({ ...user, info: { ...user.info, updateAvatar: e.checked } })} />
         <label htmlFor="vk" className="font-bold ml-2">Обновить аватар</label>
-      </div>
+      </div> */}
       <div className="flex flex-column w-12 gap-2 mt-4">
         <Button
           icon={<Icon size={1} path={mdiContentSave} />}
