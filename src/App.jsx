@@ -18,6 +18,7 @@ import Settings from "./views/Settings.jsx";
 import AddUser from "./views/users/Add.jsx";
 import PrimeReact from 'primereact/api';
 import EditUser from "./views/users/Edit.jsx";
+import UserStats from "./views/users/Stats.jsx";
 
 PrimeReact.ripple = true;
 
@@ -53,6 +54,10 @@ const router = createHashRouter([
       {
         path: "/users/edit",
         element: <EditUser />
+      },
+      {
+        path: "/users/stats",
+        element: <UserStats />
       }
     ],
   },

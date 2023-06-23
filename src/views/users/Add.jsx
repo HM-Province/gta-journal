@@ -29,7 +29,7 @@ export default function AddUser() {
     vkLink: "",
     rank: "1",
   });
-  const toast = React.useRef();
+  const toast = React.useRef(null);
 
   const checkAccess = async () => {
     const session = JSON.parse(localStorage.getItem("session_data"));
@@ -60,15 +60,17 @@ export default function AddUser() {
   const createUser = async (redirect = true) => {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
+    const payload = {
+      login: user.nickname,
+      password: user.password || makePassword(10),
+      bank: user.bank,
+      vk: user.vkLink,
+      role: user.rank,
+    };
+
     const response = await window.electronAPI.postRequest(
       "https://gta-journal.ru/api.user/add",
-      {
-        login: user.nickname,
-        password: user.password || makePassword(10),
-        bank: user.bank,
-        vk: user.vkLink,
-        role: user.rank,
-      },
+      payload,
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",
@@ -81,6 +83,8 @@ export default function AddUser() {
     );
 
     if (response.data.res == 1) {
+      navigator.clipboard.writeText(`Логин: ${payload.login}\nПароль: ${payload.password}`);
+
       if (redirect) navigate("/");
       else {
         setUser({
@@ -160,6 +164,7 @@ export default function AddUser() {
       </div>
 
       <div className="flex flex-column w-12 gap-2 mt-4">
+        <h5 className="mt-0 mb-1 mx-auto text-color-secondary">Данные для входа будут скопированы в буфер обмена</h5>
         <Button
           icon={<Icon size={1} path={mdiAccountPlus} />}
           label="Добавить пользователя"

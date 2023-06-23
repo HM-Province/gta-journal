@@ -2,11 +2,15 @@ import React from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import Icon from "@mdi/react";
-import { mdiAccountMultiplePlus, mdiAccountPlus, mdiContentSave } from "@mdi/js";
-import { InputSwitch } from 'primereact/inputswitch';
+import {
+  mdiAccountMultiplePlus,
+  mdiAccountPlus,
+  mdiContentSave,
+} from "@mdi/js";
+import { InputSwitch } from "primereact/inputswitch";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import { Checkbox } from 'primereact/checkbox';
+import { SelectButton } from "primereact/selectbutton";
 
 function makePassword(length) {
   let result = "";
@@ -28,6 +32,7 @@ export default function EditUser() {
     isLoaded: false,
     info: {
       nickname: "",
+      status: "1",
       password: "",
       rank: "",
       bank: "",
@@ -35,7 +40,22 @@ export default function EditUser() {
       updateAvatar: false,
     },
   });
-  const toast = React.useRef();
+  const toast = React.useRef(null);
+
+  const statuses = [
+    {
+      label: "Оффлайн",
+      value: "1",
+    },
+    {
+      label: "Онлайн",
+      value: "2",
+    },
+    {
+      label: "АФК",
+      value: "3",
+    },
+  ];
 
   const loadData = async () => {
     const session = JSON.parse(localStorage.getItem("session_data"));
@@ -66,11 +86,57 @@ export default function EditUser() {
       .getElementById("role")
       .querySelector("option[selected]").value;
     user.info.isAdmin = parsedDocument.getElementById("admin").checked;
+    user.info.status = parsedDocument
+      .getElementById("status")
+      .querySelector("option[selected]").value;
 
     setUser({ isLoaded: true, info: user.info });
   };
 
-  const editUser = () => {}
+  const editUser = async () => {
+    const session = JSON.parse(localStorage.getItem("session_data"));
+
+    const response = await window.electronAPI.postRequest(
+      "https://gta-journal.ru/api.user",
+      {
+        id: window.location.href.match(/id=[0-9]+/g)[0].substring(3),
+        status: user.info.status,
+        login: user.info.nickname,
+        password: user.info.password,
+        role: user.info.rank,
+        bank: user.info.bank,
+        vk: Number(user.info.updateAvatar),
+        admin: Number(user.info.isAdmin),
+      },
+      {
+        headers: {
+          "Accept-Language": "ru-RU,ru;q=0.9",
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+          Cookie: `id=${session.id}; usid=${session.usid}`,
+        },
+      }
+    );
+
+    if (response.data.res == 1) {
+      navigate("/");
+    } else if (response.data.res === 3) {
+      toast.current.show({
+        severity: "error",
+        summary: "Ошибка",
+        detail: response.data.text,
+        life: 3000,
+      });
+    } else {
+      toast.current.show({
+        severity: "error",
+        summary: "Ошибка",
+        detail: "Неизвестная ошибка",
+        life: 3000,
+      });
+    }
+  };
 
   React.useEffect(() => {
     loadData();
@@ -81,6 +147,16 @@ export default function EditUser() {
       <h2 className="mt-0">Изменить пользователя</h2>
       <Toast ref={toast} />
 
+      <SelectButton
+        value={user.info.status}
+        onChange={(e) =>
+          setUser({
+            ...user,
+            info: { ...user.info, status: e.value },
+          })
+        }
+        options={statuses}
+      />
       <div className="flex flex-column gap-2 w-12 mt-3">
         <label htmlFor="nickname-filed" className="font-bold">
           Никнейм
@@ -121,7 +197,9 @@ export default function EditUser() {
         </label>
         <InputText
           value={user.info.bank}
-          onChange={(e) => setUser({ ...user, info: { ...user.info, bank: e.target.value } })}
+          onChange={(e) =>
+            setUser({ ...user, info: { ...user.info, bank: e.target.value } })
+          }
           id="bank-field"
           placeholder="123456"
           disabled={!user.isLoaded}
@@ -133,24 +211,46 @@ export default function EditUser() {
         </label>
         <InputText
           value={user.info.rank}
-          onChange={(e) => setUser({ ...user, info: { ...user.info, nickname: e.target.value } })}
+          onChange={(e) =>
+            setUser({
+              ...user,
+              info: { ...user.info, nickname: e.target.value },
+            })
+          }
           id="rank-field"
           placeholder="1"
           disabled={!user.isLoaded}
         />
       </div>
       <div className="flex w-12 mt-3">
-        <InputSwitch />
+        <InputSwitch
+          checked={user.info.isAdmin}
+          onChange={(e) =>
+            setUser({ ...user, info: { ...user.info, isAdmin: e.value } })
+          }
+        />
         <div className="flex flex-column w-10 ml-2">
           <span className="font-bold text-md mb-0">Администратор</span>
-          <p className="text-color-secondary mt-1">Может управлять пользователями. Выдавайте с осторожностью!</p>
+          <p className="text-color-secondary mt-1">
+            Может управлять пользователями. Выдавайте с осторожностью!
+          </p>
         </div>
       </div>
       <div className="flex w-12 mt-1">
-        <InputSwitch />
+        <InputSwitch
+          checked={user.info.updateAvatar}
+          onChange={(e) =>
+            setUser({
+              ...user,
+              info: { ...user.info, updateAvatar: e.value },
+            })
+          }
+        />
         <div className="flex flex-column w-10 ml-2">
           <span className="font-bold text-md mb-0">Обновить аватар</span>
-          <p className="text-color-secondary mt-1">Если пользователь обновил аватар в ВК.</p>
+          <p className="text-color-secondary mt-1">
+            Если пользователь обновил аватар в ВК.
+          </p>
         </div>
       </div>
       {/* <div className="flex align-items-center w-12 mt-2">

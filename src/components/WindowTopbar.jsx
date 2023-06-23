@@ -12,7 +12,7 @@ export default function WindowTopbar() {
   }
 
   return <>
-    <header className="fixed w-12 top-0 left-0 py-1 surface-hover flex align-items-center justify-content-between" style={{ backdropFilter: 'blur(40px)', WebkitAppRegion: 'drag', zIndex: 9999 }}>
+    <header className="fixed w-12 top-0 left-0 py-1 surface-hover flex align-items-center justify-content-between" style={{ backdropFilter: 'blur(10px)', WebkitAppRegion: 'drag', zIndex: 9999 }}>
       <span className="font-bold text-xl ml-2">GTA Journal</span>
       <div className="flex align-items-center mr-2" style={{ WebkitAppRegion: 'none' }}>
         <Icon onClick={hideWindow} className="cursor-pointer" path={mdiChevronDown} size={1} />
