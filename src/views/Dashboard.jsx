@@ -458,13 +458,13 @@ export default function Dashboard() {
       offlineUsers.filtered = [...offlineUsers.arr];
     } else {
       onlineUsers.filtered = onlineUsers.arr.filter(
-        (user) => user.username.includes(filter) || user.tag.includes(filter)
+        (user) => user.username.toLowerCase().includes(filter.toLowerCase()) || user.tag.toLowerCase().includes(filter.toLowerCase())
       );
       afkUsers.filtered = afkUsers.arr.filter(
-        (user) => user.username.includes(filter) || user.tag.includes(filter)
+        (user) => user.username.toLowerCase().includes(filter.toLowerCase()) || user.tag.toLowerCase().includes(filter.toLowerCase())
       );
       offlineUsers.filtered = offlineUsers.arr.filter(
-        (user) => user.username.includes(filter) || user.tag.includes(filter)
+        (user) => user.username.toLowerCase().includes(filter.toLowerCase()) || user.tag.toLowerCase().includes(filter.toLowerCase())
       );
     }
 
