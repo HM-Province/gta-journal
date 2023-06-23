@@ -1,7 +1,7 @@
 {
   "name": "gta-journal",
   "productName": "GTA Journal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Оболочка Журнала Активности для МЗ сервера №1 MTA Province",
   "main": ".webpack/main",
   "scripts": {

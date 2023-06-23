@@ -8,6 +8,7 @@ import {
   mdiPoll,
   mdiCog,
   mdiLogout,
+  mdiAccountPlus,
 } from "@mdi/js";
 import clickSound from "../assets/audio/click.mp3";
 import alertSound from "../assets/audio/alert.ogg";
@@ -106,6 +107,12 @@ export default function Root() {
             label="Панель управления"
             icon={mdiViewDashboard}
           />
+          {currentUser.isAdmin && <SidebarLink
+            active={location.pathname == "/users/add"}
+            to="/users/add"
+            label="Добавить пользователя"
+            icon={mdiAccountPlus}
+          />}
           <SidebarLink
             active={location.pathname == "/top"}
             to="/top"
