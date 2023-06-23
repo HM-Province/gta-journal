@@ -108,7 +108,7 @@ export default function AddUser() {
       <h2 className="mt-0">Добавить пользователя</h2>
       <Toast ref={toast} />
       <div className="flex flex-column gap-2 w-12 mt-3">
-        <label htmlFor="nickname-filed" className="font-bold">
+        <label htmlFor="nickname-field" className="font-bold">
           Никнейм
         </label>
         <InputText
@@ -119,7 +119,7 @@ export default function AddUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="password-filed" className="font-bold">
+        <label htmlFor="password-field" className="font-bold">
           Пароль
         </label>
         <InputText
@@ -130,18 +130,18 @@ export default function AddUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="password-filed" className="font-bold">
+        <label htmlFor="bank-field" className="font-bold">
           Счёт в банке
         </label>
         <InputText
           value={user.bank}
           onChange={(e) => setUser({ ...user, bank: e.target.value })}
-          id="password-field"
+          id="bank-field"
           placeholder="123456"
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="password-filed" className="font-bold">
+        <label htmlFor="password-field" className="font-bold">
           Ссылка на ВК
         </label>
         <InputText
@@ -152,7 +152,7 @@ export default function AddUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="password-filed" className="font-bold">
+        <label htmlFor="password-field" className="font-bold">
           Ранг
         </label>
         <InputText
