@@ -158,7 +158,7 @@ export default function EditUser() {
         options={statuses}
       />
       <div className="flex flex-column gap-2 w-12 mt-3">
-        <label htmlFor="nickname-filed" className="font-bold">
+        <label htmlFor="nickname-field" className="font-bold">
           Никнейм
         </label>
         <InputText
@@ -175,7 +175,7 @@ export default function EditUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="password-filed" className="font-bold">
+        <label htmlFor="password-field" className="font-bold">
           Пароль
         </label>
         <InputText
@@ -192,7 +192,7 @@ export default function EditUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="bank-filed" className="font-bold">
+        <label htmlFor="bank-field" className="font-bold">
           Счёт в банке
         </label>
         <InputText
@@ -206,7 +206,7 @@ export default function EditUser() {
         />
       </div>
       <div className="flex flex-column gap-2 w-12 mt-2">
-        <label htmlFor="rank-filed" className="font-bold">
+        <label htmlFor="rank-field" className="font-bold">
           Ранг
         </label>
         <InputText
@@ -214,11 +214,11 @@ export default function EditUser() {
           onChange={(e) =>
             setUser({
               ...user,
-              info: { ...user.info, nickname: e.target.value },
+              info: { ...user.info, rank: e.target.value },
             })
           }
           id="rank-field"
-          placeholder="1"
+          placeholder="От 1 до 10"
           disabled={!user.isLoaded}
         />
       </div>
