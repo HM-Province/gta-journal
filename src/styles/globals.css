@@ -29,3 +29,7 @@ a {
   text-decoration: none;
   color: var(--text-color);
 }
+
+.p-toast {
+  top: 3rem !important;
+}
