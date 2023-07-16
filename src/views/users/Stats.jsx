@@ -13,9 +13,9 @@ const MONTHS = {
   "07": "Июль",
   "08": "Август",
   "09": "Сентябрь",
-  "10": "Октябрь",
-  "11": "Ноябрь",
-  "12": "Декабрь",
+  10: "Октябрь",
+  11: "Ноябрь",
+  12: "Декабрь",
 };
 
 export default function UserStats() {
@@ -33,7 +33,9 @@ export default function UserStats() {
   const navigate = useNavigate();
 
   const changeUser = (id) => {
-    window.location.replace(window.location.href.replace(/id=[0-9]+/g, `id=${id}`));
+    window.location.replace(
+      window.location.href.replace(/id=[0-9]+/g, `id=${id}`)
+    );
     window.location.reload();
   };
 
@@ -69,14 +71,16 @@ export default function UserStats() {
     if (!tableElement) return navigate("/logout");
 
     users.arr = [];
-    const userSelections = parsedDocument.querySelector(".select-user").querySelectorAll("option");
+    const userSelections = parsedDocument
+      .querySelector(".select-user")
+      .querySelectorAll("option");
     for (const i in Array.from(userSelections.keys())) {
       const user = userSelections[i];
       if (user.value == "0") continue;
 
       users.arr.push({
         label: user.innerText,
-        value: user.value
+        value: user.value,
       });
     }
 
@@ -98,6 +102,8 @@ export default function UserStats() {
             ? "normal"
             : tableColumn.querySelector(".status-success")
             ? "success"
+            : tableColumn.querySelector(".day-status")
+            ? "inactive"
             : undefined,
           day: tableColumn.querySelector(".day-number")?.innerText,
           time: tableColumn.querySelector(".day-status")?.innerText,
@@ -203,7 +209,9 @@ export default function UserStats() {
                                     ? "red"
                                     : column.status === "success"
                                     ? "green"
-                                    : "indigo"
+                                    : column.status === "normal"
+                                    ? "indigo"
+                                    : "gray"
                                 }-400 border-round-md`
                               : ""
                           }`}

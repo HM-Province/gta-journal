@@ -501,7 +501,7 @@ export default function Dashboard() {
           </div>
           <Button
             className="ml-auto mr-2"
-            severity={"info"}
+            
             loading
             icon={<Icon path={mdiLogout} size={1} />}
           />
@@ -531,7 +531,7 @@ export default function Dashboard() {
           <Button
             onClick={() => loadUser()}
             className="ml-auto mr-2"
-            severity={"info"}
+            
             icon={<Icon path={mdiSync} size={1} />}
           />
         </div>

@@ -4,7 +4,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import "./styles/globals.css";
 import "primeflex/primeflex.css";
 import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-dark-blue/theme.css";
+import "./theme/common/theme.scss";
 import Root from "./views/Root.jsx";
 import Login from "./views/Login.jsx";
 import WindowTopbar from "./components/WindowTopbar.jsx";

@@ -30,6 +30,17 @@ module.exports = [
     test: /\.(gif|jpg|png|mp3|aac|ogg)$/,
     use: 'file-loader'
   },
+  {
+    test: /\.s[ac]ss$/i,
+    use: [
+      // Creates `style` nodes from JS strings
+      "style-loader",
+      // Translates CSS into CommonJS
+      "css-loader",
+      // Compiles Sass to CSS
+      "sass-loader",
+    ],
+  },
   // Put your webpack loader rules in this array.  This is where you would put
   // your ts-loader configuration for instance:
   /**
