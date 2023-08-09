@@ -50,7 +50,7 @@ export const userSlice = createSlice({
       const session = JSON.parse(localStorage.getItem("session_data"));
 
       await window.electronAPI.postRequest(
-        "https://gta-journal.ru/api.editstatus",
+        "https://journal.province.sitece.site/api.editstatus",
         {
           status: action.payload,
         },
