@@ -12,19 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { SelectButton } from "primereact/selectbutton";
 
-function makePassword(length) {
-  let result = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=";
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
-
 export default function EditUser() {
   const navigate = useNavigate();
 
@@ -97,7 +84,7 @@ export default function EditUser() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.postRequest(
-      "https://journal.province.sitece.site/api.user",
+      "https://journal.province.site/api.user",
       {
         id: window.location.href.match(/id=[0-9]+/g)[0].substring(3),
         status: user.info.status,
