@@ -22,7 +22,7 @@ export default function Login() {
     localStorage.setItem("auth_credentials", JSON.stringify(loginInfo));
 
     const response = await window.electronAPI.postRequest(
-      "https://journal.province.site/api.login",
+      "https://journal.gtajournal.ru/api.login",
       {
         login: loginInfo.login,
         password: loginInfo.password,

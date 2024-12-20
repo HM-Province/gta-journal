@@ -12,7 +12,7 @@ export default function Top() {
     const sessionData = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      "https://journal.province.site/top",
+      "https://journal.gtajournal.ru/top",
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",

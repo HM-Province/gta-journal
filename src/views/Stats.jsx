@@ -37,7 +37,7 @@ export default function Stats() {
     const sessionData = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      "https://journal.province.site/statistics"+(selectedMonth ? `?${new URLSearchParams({ date: selectedMonth }).toString()}` : ''),
+      "https://journal.gtajournal.ru/statistics"+(selectedMonth ? `?${new URLSearchParams({ date: selectedMonth }).toString()}` : ''),
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",
