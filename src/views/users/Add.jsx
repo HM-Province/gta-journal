@@ -35,7 +35,7 @@ export default function AddUser() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      "https://journal.gtajournal.ru/user/add",
+      "https://status-journal.com/user/add",
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",
@@ -69,7 +69,7 @@ export default function AddUser() {
     };
 
     const response = await window.electronAPI.postRequest(
-      "https://journal.gtajournal.ru/api.user/add",
+      "https://status-journal.com/api.user/add",
       payload,
       {
         headers: {

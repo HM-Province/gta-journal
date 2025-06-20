@@ -193,7 +193,7 @@ export default function Dashboard() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.postRequest(
-      "https://journal.gtajournal.ru/api.user",
+      "https://status-journal.com/api.user",
       {
         id: Number(user.href.match(/id=[0-9]+/g)[0].substring(3)),
         status: status,
@@ -243,7 +243,7 @@ export default function Dashboard() {
         const session = JSON.parse(localStorage.getItem("session_data"));
 
         const response = await window.electronAPI.postRequest(
-          "https://journal.gtajournal.ru/api.deluser",
+          "https://status-journal.com/api.deluser",
           {
             id: user.href.match(/id=[0-9]+/g)[0].substring(3),
           },
@@ -312,7 +312,7 @@ export default function Dashboard() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      "https://journal.gtajournal.ru/dashboard",
+      "https://status-journal.com/dashboard",
       {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9",
@@ -348,7 +348,7 @@ export default function Dashboard() {
     newCurrentUserInfo.tag = currentUserElement.innerText
       .match(/\[.+\]/g)[0]
       .replace(/\[|\]/g, "");
-    newCurrentUserInfo.avatar = `https://journal.gtajournal.ru${parsedDocument
+    newCurrentUserInfo.avatar = `https://status-journal.com${parsedDocument
       .querySelector("div.avatar")
       .getElementsByTagName("img")[0]
       .getAttribute("src")}`;
@@ -382,7 +382,7 @@ export default function Dashboard() {
               item.querySelector(".username").innerText.match(/\[.+\] /g)[0]
                 .length
             ),
-          avatar: `https://journal.gtajournal.ru${item
+          avatar: `https://status-journal.com${item
             .getElementsByTagName("img")[0]
             .getAttribute("src")}`,
         };
@@ -429,7 +429,7 @@ export default function Dashboard() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     await window.electronAPI.postRequest(
-      "https://journal.gtajournal.ru/api.editstatus",
+      "https://status-journal.com/api.editstatus",
       {
         status: code,
       },
