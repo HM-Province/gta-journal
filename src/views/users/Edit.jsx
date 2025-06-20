@@ -48,7 +48,7 @@ export default function EditUser() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.getRequest(
-      `https://journal.gtajournal.ru/user?id=${window.location.href
+      `https://status-journal.com/user?id=${window.location.href
         .match(/id=[0-9]+/g)[0]
         .substring(3)}`,
       {
@@ -84,7 +84,7 @@ export default function EditUser() {
     const session = JSON.parse(localStorage.getItem("session_data"));
 
     const response = await window.electronAPI.postRequest(
-      "https://journal.gtajournal.ru/api.user",
+      "https://status-journal.com/api.user",
       {
         id: window.location.href.match(/id=[0-9]+/g)[0].substring(3),
         status: user.info.status,

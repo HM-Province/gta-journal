@@ -47,7 +47,7 @@ export default function UserStats() {
 
     const sessionData = JSON.parse(localStorage.getItem("session_data"));
     const response = await window.electronAPI.getRequest(
-      "https://journal.gtajournal.ru/user/statistics" +
+      "https://status-journal.com/user/statistics" +
         `?${new URLSearchParams(
           selectedMonth
             ? { date: selectedMonth, user: users.selected }
