@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("requests:post", url, data, options),
   closeWindow: () => ipcRenderer.send("close-window"),
   hideWindow: () => ipcRenderer.send("hide-window"),
-  getProcessesByName: (name) => ipcRenderer.invoke("processes:get", name)
+  getProcessesByName: (name) => ipcRenderer.invoke("processes:get", name),
+  openExternal: (url) => ipcRenderer.invoke("open-external", url)
 });

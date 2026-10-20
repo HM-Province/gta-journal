@@ -19,6 +19,7 @@ import AddUser from "./views/users/Add.jsx";
 import PrimeReact from 'primereact/api';
 import EditUser from "./views/users/Edit.jsx";
 import UserStats from "./views/users/Stats.jsx";
+import { Dialog } from "primereact/dialog";
 
 PrimeReact.ripple = true;
 
@@ -73,13 +74,59 @@ const router = createHashRouter([
 
 const root = createRoot(document.getElementById("app"));
 
-root.render(
-  <React.StrictMode>
+function App() {
+  const [noticeVisible, setNoticeVisible] = React.useState(true);
+
+  return (
     <Provider store={store}>
+      <Dialog
+        header="Эта версия больше не поддерживается"
+        visible={noticeVisible}
+        onHide={() => setNoticeVisible(false)}
+        modal
+        closable
+        draggable={false}
+        resizable={false}
+        style={{ width: "min(32rem, calc(100vw - 2rem))" }}
+      >
+        <p>
+          Скачайте новую редакцию журнала со страницы{" "}
+          <a
+            href="https://mz.kaze.red/journal"
+            onClick={(event) => {
+              event.preventDefault();
+              window.electronAPI.openExternal("https://mz.kaze.red/journal");
+            }}
+          >
+            mz.kaze.red/journal
+          </a>
+          . После этого удалите эту программу средствами Windows.
+        </p>
+        <small>
+          Резервная ссылка: {" "}
+          <a
+            href="https://github.com/HM-Province/GtaJournal-Reloaded/blob/master/README.md"
+            onClick={(event) => {
+              event.preventDefault();
+              window.electronAPI.openExternal(
+                "https://github.com/HM-Province/GtaJournal-Reloaded/blob/master/README.md"
+              );
+            }}
+          >
+            GitHub README
+          </a>
+        </small>
+      </Dialog>
       <WindowTopbar />
       <main className="flex" style={{ paddingTop: "33px" }}>
         <RouterProvider router={router} />
       </main>
     </Provider>
+  );
+}
+
+root.render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>
 );

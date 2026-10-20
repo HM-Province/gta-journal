@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const axios = require("axios");
 const path = require("node:path");
 const fs = require("node:fs");
@@ -90,6 +90,13 @@ app.on("ready", () => {
   ipcMain.handle("processes:get", getProcessesByName)
   ipcMain.handle("requests:get", handleAsyncGetRequest)
   ipcMain.handle("requests:post", handleAsyncPostRequest)
+  ipcMain.handle("open-external", (_, url) => {
+    const allowedUrls = [
+      "https://mz.kaze.red/journal",
+      "https://github.com/HM-Province/GtaJournal-Reloaded/blob/master/README.md",
+    ];
+    if (allowedUrls.includes(url)) return shell.openExternal(url);
+  });
 
   ipcMain.on("hide-window", () => window.minimize());
   ipcMain.on("close-window", () => app.quit());
